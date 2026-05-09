@@ -1,0 +1,14 @@
+name: Gmail Check
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check-gmail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Gmail for all workspaces
+        run: |
+          curl -X GET "${{ secrets.VERCEL_URL }}/api/check-gmail?workspace_id=${{ secrets.WORKSPACE_ID }}&days=30"
