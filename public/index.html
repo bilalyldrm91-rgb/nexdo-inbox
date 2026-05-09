@@ -1,2 +1,74 @@
 <!DOCTYPE html>
-<html><head><title>Nexdo Inbox</title></head><body></body></html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nexdo Inbox</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.box{background:#fff;border-radius:16px;padding:40px;width:480px;max-width:92vw;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-align:center;}
+.logo{font-size:22px;font-weight:700;color:#5B5FEF;margin-bottom:24px;}
+.welcome{font-size:20px;font-weight:600;color:#111827;margin-bottom:8px;}
+.sub{font-size:14px;color:#6B7280;margin-bottom:32px;line-height:1.6;}
+.info{background:#EEEEFF;border-radius:10px;padding:16px;margin-bottom:24px;text-align:left;}
+.info-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #E5E7EB;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:#6B7280;}
+.info-val{color:#111827;font-weight:500;}
+.btn{display:inline-block;padding:11px 24px;background:#5B5FEF;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;}
+.btn:hover{background:#4A4ED8;}
+.btn-outline{display:inline-block;padding:11px 24px;background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:8px;}
+.tag{display:inline-block;background:#E8F5EA;color:#2D7A3A;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:20px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">Nexdo Inbox</div>
+  <div class="tag">✓ Hesabınız oluşturuldu</div>
+  <div class="welcome" id="welcome-name">Hoş geldiniz!</div>
+  <div class="sub">Paneliniz hazırlanıyor. Aşağıda hesap bilgilerinizi görebilirsiniz.</div>
+  <div class="info" id="info-box"></div>
+  <button class="btn" onclick="doLogout()">Çıkış Yap</button>
+</div>
+
+<script>
+const SURL = 'https://aqonfhxwzpxtyqecfddi.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
+const sb = supabase.createClient(SURL, SKEY);
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+
+  const user = session.user;
+  document.getElementById('welcome-name').textContent = 'Hoş geldiniz, ' + (user.user_metadata?.full_name || user.email) + '!';
+
+  const { data: member } = await sb.from('members')
+    .select('role, workspace_id, workspaces(name, org_id, organizations(name))')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .single();
+
+  if (member) {
+    const wsName = member.workspaces?.name || '—';
+    const orgName = member.workspaces?.organizations?.name || '—';
+    document.getElementById('info-box').innerHTML = `
+      <div class="info-row"><span class="info-label">E-posta</span><span class="info-val">${user.email}</span></div>
+      <div class="info-row"><span class="info-label">Organizasyon</span><span class="info-val">${orgName}</span></div>
+      <div class="info-row"><span class="info-label">Şube</span><span class="info-val">${wsName}</span></div>
+      <div class="info-row"><span class="info-label">Rol</span><span class="info-val">${member.role}</span></div>
+    `;
+  }
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  window.location.href = '/login.html';
+}
+
+init();
+</script>
+</body>
+</html>
