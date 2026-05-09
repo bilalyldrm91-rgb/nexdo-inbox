@@ -4,25 +4,17 @@ const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_K
 
 export default async function handler(req, res) {
 
-  // Webhook doğrulama
+ // Webhook doğrulama
   if(req.method === 'GET') {
     const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
 
-    const { data: channels } = await sb.from('channels')
-      .select('credentials')
-      .eq('type', 'whatsapp')
-      .eq('active', true);
-
-    const validToken = channels?.some(ch => ch.credentials?.verify_token === token);
-
-    if(mode === 'subscribe' && validToken) {
+    if(mode === 'subscribe' && token === process.env.WA_VERIFY_TOKEN) {
       return res.status(200).send(challenge);
     }
     return res.status(403).end();
   }
-
   // Gelen mesajları işle
   if(req.method === 'POST') {
     const body = req.body;
