@@ -65,7 +65,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .act-btn{padding:6px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:12px;cursor:pointer;background:#fff;color:#6B7280;font-family:inherit;font-weight:500;}
 .act-btn:hover{background:#F9FAFB;}
 .act-btn.resolve{background:#DCFCE7;border-color:#DCFCE7;color:#166534;}
-.chat-msgs{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:#F9FAFB;}
+.chat-msgs{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:#F9FAFB;min-height:0;}
 .msg-wrap{display:flex;gap:8px;align-items:flex-end;}
 .msg-wrap.out{flex-direction:row-reverse;}
 .msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
@@ -233,7 +233,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
     <div style="font-size:15px;font-weight:500;color:#6B7280;">Bir konuşma seçin</div>
     <div style="font-size:13px;">Sol taraftan konuşma seçerek başlayın</div>
   </div>
-  <div id="chat-area" style="display:none;flex:1;flex-direction:column;">
+  <div id="chat-area" style="display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;">
     <div class="chat-header">
       <div class="chat-av" id="chat-av">?</div>
       <div class="chat-info">
@@ -536,7 +536,7 @@ const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 const sb=supabase.createClient(SURL,SKEY);
 
 let user=null,myMember=null,workspaces=[],conversations=[],wsMembers=[];
-let activeWsId=null,activeConvId=null,currentOrgId=null;
+let activeWsId=null,activeConvId=null,activeConv=null,currentOrgId=null;
 let channelFilter='all',statusFilter='all',selectedMemberId=null;
 
 const PERM_LABELS={
@@ -687,7 +687,8 @@ function updateBadges(){
 
 async function openConv(convId){
   activeConvId=convId;
-  const conv=conversations.find(c=>c.id===convId);
+  activeConv=conversations.find(c=>c.id===convId);
+  const conv=activeConv;
   if(!conv)return;
   document.getElementById('no-conv').style.display='none';
   const ca=document.getElementById('chat-area');ca.style.display='flex';ca.style.flexDirection='column';
@@ -735,7 +736,14 @@ async function sendMessage(){
 
   if(conv.channel_type==='email'){
     try{
-      const res=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conversation_id:activeConvId,body,workspace_id:activeWsId,sent_by:user.id})});
+      const res=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        conversation_id:activeConvId,
+        body,
+        workspace_id:activeWsId,
+        sent_by:user.id,
+        contact_name:conv.contact_name||'',
+        contact_id:conv.contact_id||''
+      })});
       const data=await res.json();
       if(data.error){alert('Mail gönderilemedi: '+data.error);ta.disabled=false;return;}
     }catch(e){alert('Bağlantı hatası: '+e.message);ta.disabled=false;return;}
