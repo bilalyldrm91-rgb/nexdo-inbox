@@ -447,23 +447,41 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
           <button class="connect-btn" onclick="toggleForm('mail-form')">Ayarla</button>
         </div>
         <div class="api-form" id="mail-form">
+          <div style="display:flex;gap:6px;margin-bottom:14px;">
+            <button onclick="setMailPreset('gmail')" style="flex:1;padding:7px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:12px;cursor:pointer;background:#fff;font-family:inherit;font-weight:500;">📧 Gmail</button>
+            <button onclick="setMailPreset('outlook')" style="flex:1;padding:7px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:12px;cursor:pointer;background:#fff;font-family:inherit;font-weight:500;">📧 Outlook</button>
+            <button onclick="setMailPreset('custom')" style="flex:1;padding:7px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:12px;cursor:pointer;background:#fff;font-family:inherit;font-weight:500;">🏢 Şirket</button>
+          </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">SMTP Host</label>
+              <label class="form-label">IMAP Host (Gelen Mail)</label>
+              <input class="form-input" id="mail-imap-host" placeholder="imap.gmail.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">IMAP Port</label>
+              <input class="form-input" id="mail-imap-port" placeholder="993"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">SMTP Host (Giden Mail)</label>
               <input class="form-input" id="mail-host" placeholder="smtp.gmail.com"/>
             </div>
             <div class="form-group">
-              <label class="form-label">Port</label>
+              <label class="form-label">SMTP Port</label>
               <input class="form-input" id="mail-port" placeholder="587"/>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">E-posta</label>
+            <label class="form-label">E-posta Adresi</label>
             <input class="form-input" id="mail-email" placeholder="info@isletme.com"/>
           </div>
           <div class="form-group">
             <label class="form-label">Şifre / App Password</label>
-            <input class="form-input" id="mail-pass" type="password" placeholder="Gmail App Password"/>
+            <input class="form-input" id="mail-pass" type="password" placeholder="Gmail App Password veya şifreniz"/>
+          </div>
+          <div style="background:#E8F5EA;border-radius:8px;padding:10px 12px;font-size:12px;color:#2D7A3A;margin-bottom:12px;line-height:1.6;">
+            💡 Gmail için şifre yerine <strong>App Password</strong> gerekir. Gmail → Güvenlik → Uygulama Şifreleri
           </div>
           <button class="save-btn" onclick="saveChannel('email')">Kaydet</button>
           <span class="save-msg" id="mail-msg"></span>
@@ -898,7 +916,7 @@ async function loadChannelStatus(){
     if(el&&ch.active){el.textContent='Bağlı';el.className='ch-status st-on';}
     if(ch.type==='whatsapp'&&ch.credentials){document.getElementById('wa-phone-id').value=ch.credentials.phone_number_id||'';document.getElementById('wa-account-id').value=ch.credentials.account_id||'';document.getElementById('wa-verify').value=ch.credentials.verify_token||'';}
     if(ch.type==='instagram'&&ch.credentials){document.getElementById('ig-account-id').value=ch.credentials.account_id||'';document.getElementById('ig-verify').value=ch.credentials.verify_token||'';}
-    if(ch.type==='email'&&ch.credentials){document.getElementById('mail-host').value=ch.credentials.host||'';document.getElementById('mail-port').value=ch.credentials.port||'';document.getElementById('mail-email').value=ch.credentials.email||'';}
+    if(ch.type==='email'&&ch.credentials){document.getElementById('mail-host').value=ch.credentials.host||'';document.getElementById('mail-port').value=ch.credentials.port||'';document.getElementById('mail-imap-host').value=ch.credentials.imap_host||'';document.getElementById('mail-imap-port').value=ch.credentials.imap_port||'';document.getElementById('mail-email').value=ch.credentials.email||'';}
   });
 }
 
@@ -913,14 +931,27 @@ async function saveChannel(type){
     credentials={account_id:document.getElementById('ig-account-id').value.trim(),access_token:document.getElementById('ig-token').value.trim(),verify_token:document.getElementById('ig-verify').value.trim()};
     if(!credentials.account_id||!credentials.access_token){msg.className='save-msg err';msg.textContent='Account ID ve Token gerekli.';return;}
   }else{
-    credentials={host:document.getElementById('mail-host').value.trim(),port:document.getElementById('mail-port').value.trim(),email:document.getElementById('mail-email').value.trim(),password:document.getElementById('mail-pass').value};
-    if(!credentials.host||!credentials.email){msg.className='save-msg err';msg.textContent='Host ve e-posta gerekli.';return;}
+    credentials={host:document.getElementById('mail-host').value.trim(),port:document.getElementById('mail-port').value.trim(),imap_host:document.getElementById('mail-imap-host').value.trim(),imap_port:document.getElementById('mail-imap-port').value.trim(),email:document.getElementById('mail-email').value.trim(),password:document.getElementById('mail-pass').value};
+    if(!credentials.imap_host||!credentials.email){msg.className='save-msg err';msg.textContent='IMAP host ve e-posta gerekli.';return;}
   }
   msg.className='save-msg';msg.textContent='Kaydediliyor...';
   const {error}=await sb.from('channels').upsert({workspace_id:activeWsId,type,credentials,active:true},{onConflict:'workspace_id,type'});
   if(error){msg.className='save-msg err';msg.textContent=error.message;return;}
   msg.className='save-msg ok';msg.textContent='✓ Kaydedildi!';
   loadChannelStatus();setTimeout(()=>msg.textContent='',2000);
+}
+
+function setMailPreset(type){
+  const presets={
+    gmail:{imap_host:'imap.gmail.com',imap_port:'993',smtp_host:'smtp.gmail.com',smtp_port:'587'},
+    outlook:{imap_host:'imap-mail.outlook.com',imap_port:'993',smtp_host:'smtp-mail.outlook.com',smtp_port:'587'},
+    custom:{imap_host:'',imap_port:'993',smtp_host:'',smtp_port:'587'}
+  };
+  const p=presets[type];
+  document.getElementById('mail-imap-host').value=p.imap_host;
+  document.getElementById('mail-imap-port').value=p.imap_port;
+  document.getElementById('mail-host').value=p.smtp_host;
+  document.getElementById('mail-port').value=p.smtp_port;
 }
 
 function toggleForm(id){document.getElementById(id).classList.toggle('show');}
