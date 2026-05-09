@@ -57,12 +57,13 @@ const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 const sb=supabase.createClient(SURL,SKEY);
 
 async function init(){
-  // URL'den token al — hem hash hem query param destekle
-  const hash=window.location.hash.substring(1);
-  const params=new URLSearchParams(hash||window.location.search);
-  const accessToken=params.get('access_token');
-  const type=params.get('type');
-  const errorDesc=params.get('error_description');
+  // Hem hash hem query string'den parametreleri oku
+  const hashParams=new URLSearchParams(window.location.hash.substring(1));
+  const queryParams=new URLSearchParams(window.location.search);
+
+  const accessToken=hashParams.get('access_token')||queryParams.get('access_token');
+  const refreshToken=hashParams.get('refresh_token')||queryParams.get('refresh_token')||'';
+  const errorDesc=hashParams.get('error_description')||queryParams.get('error_description');
 
   if(errorDesc){
     document.getElementById('banner').className='banner err';
@@ -72,24 +73,27 @@ async function init(){
   }
 
   if(accessToken){
-    // Token ile oturum aç
-    const {data,error}=await sb.auth.setSession({
+    const {error}=await sb.auth.setSession({
       access_token:accessToken,
-      refresh_token:params.get('refresh_token')||''
+      refresh_token:refreshToken
     });
     if(error){
       document.getElementById('banner').className='banner err';
-      document.getElementById('banner').textContent='Geçersiz veya süresi dolmuş davet linki.';
+      document.getElementById('banner').textContent='Geçersiz veya süresi dolmuş davet linki: '+error.message;
       document.getElementById('form-area').style.display='none';
+    } else {
+      document.getElementById('banner').textContent='Hoş geldiniz! Lütfen yeni şifrenizi belirleyin.';
     }
     return;
   }
 
-  // Token yoksa zaten oturumu var mı kontrol et
+  // Token yoksa mevcut oturumu kontrol et
   const {data:{session}}=await sb.auth.getSession();
-  if(!session){
+  if(session&&session.user){
+    document.getElementById('banner').textContent='Şifrenizi belirleyin.';
+  } else {
     document.getElementById('banner').className='banner err';
-    document.getElementById('banner').textContent='Geçersiz link. Lütfen tekrar davet isteyin.';
+    document.getElementById('banner').textContent='Geçersiz link. Lütfen yöneticinizden yeni davet isteyin.';
     document.getElementById('form-area').style.display='none';
   }
 }
