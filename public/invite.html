@@ -12,10 +12,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
 .logo{font-size:22px;font-weight:700;color:#5B5FEF;margin-bottom:4px;}
 .sub{font-size:13px;color:#9CA3AF;margin-bottom:8px;}
 .banner{background:#E8F5EA;border:1px solid #BBF7D0;border-radius:8px;padding:10px 14px;font-size:13px;color:#2D7A3A;margin-bottom:24px;line-height:1.5;}
+.banner.err{background:#FEE2E2;border-color:#FECACA;color:#B91C1C;}
 .label{font-size:12px;color:#6B7280;margin-bottom:5px;display:block;font-weight:500;}
 .input{width:100%;padding:10px 13px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;font-family:inherit;}
 .input:focus{border-color:#5B5FEF;}
-.strength{height:4px;border-radius:2px;margin-top:-10px;margin-bottom:14px;transition:all 0.3s;}
+.strength{height:4px;border-radius:2px;margin-top:-10px;margin-bottom:14px;transition:all 0.3s;background:#E5E7EB;}
 .btn{width:100%;padding:11px;background:#5B5FEF;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
 .btn:hover{background:#4A4ED8;}
 .btn:disabled{background:#9CA3AF;cursor:not-allowed;}
@@ -32,97 +33,104 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
 <div class="box">
   <div class="logo">Nexdo Inbox</div>
   <div class="sub">Hoş geldiniz!</div>
-  <div class="banner">
-    Hesabınıza davet edildiniz. Güvenliğiniz için lütfen yeni bir şifre belirleyin.
+  <div class="banner" id="banner">Hesabınıza davet edildiniz. Lütfen yeni bir şifre belirleyin.</div>
+
+  <div id="form-area">
+    <label class="label">Yeni Şifre</label>
+    <input class="input" id="password" type="password" placeholder="En az 8 karakter" oninput="checkStrength()"/>
+    <div class="strength" id="strength-bar"></div>
+    <div class="rules">
+      <div class="rule" id="rule-len"><div class="rule-dot"></div> En az 8 karakter</div>
+      <div class="rule" id="rule-upper"><div class="rule-dot"></div> En az 1 büyük harf</div>
+      <div class="rule" id="rule-num"><div class="rule-dot"></div> En az 1 rakam</div>
+    </div>
+    <label class="label">Şifre Tekrar</label>
+    <input class="input" id="password2" type="password" placeholder="Şifrenizi tekrar girin" oninput="checkMatch()"/>
+    <button class="btn" id="submit-btn" onclick="doSetPassword()" disabled>Şifremi Belirle</button>
+    <div class="msg" id="msg"></div>
   </div>
-
-  <label class="label">Yeni Şifre</label>
-  <input class="input" id="password" type="password" placeholder="En az 8 karakter" oninput="checkStrength()"/>
-  <div class="strength" id="strength-bar"></div>
-
-  <div class="rules" id="rules">
-    <div class="rule" id="rule-len"><div class="rule-dot"></div> En az 8 karakter</div>
-    <div class="rule" id="rule-upper"><div class="rule-dot"></div> En az 1 büyük harf</div>
-    <div class="rule" id="rule-num"><div class="rule-dot"></div> En az 1 rakam</div>
-  </div>
-
-  <label class="label">Şifre Tekrar</label>
-  <input class="input" id="password2" type="password" placeholder="Şifrenizi tekrar girin" oninput="checkMatch()"/>
-
-  <button class="btn" id="submit-btn" onclick="doSetPassword()" disabled>Şifremi Belirle</button>
-  <div class="msg" id="msg"></div>
 </div>
 
 <script>
-const SURL = 'https://aqonfhxwzpxtyqecfddi.supabase.co';
-const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
-const sb = supabase.createClient(SURL, SKEY);
+const SURL='https://aqonfhxwzpxtyqecfddi.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
+const sb=supabase.createClient(SURL,SKEY);
 
-// Sayfaya gelince oturum kontrolü
-sb.auth.onAuthStateChange(async (event, session) => {
-  if(!session) {
-    window.location.href = '/login.html';
+async function init(){
+  // URL'den token al — hem hash hem query param destekle
+  const hash=window.location.hash.substring(1);
+  const params=new URLSearchParams(hash||window.location.search);
+  const accessToken=params.get('access_token');
+  const type=params.get('type');
+  const errorDesc=params.get('error_description');
+
+  if(errorDesc){
+    document.getElementById('banner').className='banner err';
+    document.getElementById('banner').textContent='Hata: '+decodeURIComponent(errorDesc);
+    document.getElementById('form-area').style.display='none';
     return;
   }
-  // force_password_change kontrolü
-  const {data:member} = await sb.from('members')
-    .select('force_password_change')
-    .eq('user_id', session.user.id)
-    .eq('status','active')
-    .single();
-  // Eğer şifre değişikliği gerekmiyorsa panele gönder
-  if(member && !member.force_password_change){
-    window.location.href = '/index.html';
+
+  if(accessToken){
+    // Token ile oturum aç
+    const {data,error}=await sb.auth.setSession({
+      access_token:accessToken,
+      refresh_token:params.get('refresh_token')||''
+    });
+    if(error){
+      document.getElementById('banner').className='banner err';
+      document.getElementById('banner').textContent='Geçersiz veya süresi dolmuş davet linki.';
+      document.getElementById('form-area').style.display='none';
+    }
+    return;
   }
-});
+
+  // Token yoksa zaten oturumu var mı kontrol et
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){
+    document.getElementById('banner').className='banner err';
+    document.getElementById('banner').textContent='Geçersiz link. Lütfen tekrar davet isteyin.';
+    document.getElementById('form-area').style.display='none';
+  }
+}
 
 function checkStrength(){
-  const p = document.getElementById('password').value;
-  const bar = document.getElementById('strength-bar');
-  const r1 = document.getElementById('rule-len');
-  const r2 = document.getElementById('rule-upper');
-  const r3 = document.getElementById('rule-num');
-
-  const hasLen = p.length >= 8;
-  const hasUpper = /[A-Z]/.test(p);
-  const hasNum = /[0-9]/.test(p);
-
-  r1.classList.toggle('pass', hasLen);
-  r2.classList.toggle('pass', hasUpper);
-  r3.classList.toggle('pass', hasNum);
-
-  const score = [hasLen, hasUpper, hasNum].filter(Boolean).length;
-  const colors = ['#FCA5A5','#FCD34D','#86EFAC'];
-  const widths = ['33%','66%','100%'];
-  bar.style.background = score > 0 ? colors[score-1] : '#E5E7EB';
-  bar.style.width = score > 0 ? widths[score-1] : '0%';
-
+  const p=document.getElementById('password').value;
+  const bar=document.getElementById('strength-bar');
+  const r1=document.getElementById('rule-len');
+  const r2=document.getElementById('rule-upper');
+  const r3=document.getElementById('rule-num');
+  const hasLen=p.length>=8;
+  const hasUpper=/[A-Z]/.test(p);
+  const hasNum=/[0-9]/.test(p);
+  r1.classList.toggle('pass',hasLen);
+  r2.classList.toggle('pass',hasUpper);
+  r3.classList.toggle('pass',hasNum);
+  const score=[hasLen,hasUpper,hasNum].filter(Boolean).length;
+  const colors=['#FCA5A5','#FCD34D','#86EFAC'];
+  bar.style.background=score>0?colors[score-1]:'#E5E7EB';
+  bar.style.width=score>0?['33%','66%','100%'][score-1]:'0%';
   checkMatch();
 }
 
 function checkMatch(){
-  const p1 = document.getElementById('password').value;
-  const p2 = document.getElementById('password2').value;
-  const btn = document.getElementById('submit-btn');
-  const hasLen = p1.length >= 8;
-  const hasUpper = /[A-Z]/.test(p1);
-  const hasNum = /[0-9]/.test(p1);
-  const allPass = hasLen && hasUpper && hasNum && p1 === p2 && p2.length > 0;
-  btn.disabled = !allPass;
+  const p1=document.getElementById('password').value;
+  const p2=document.getElementById('password2').value;
+  const hasLen=p1.length>=8;
+  const hasUpper=/[A-Z]/.test(p1);
+  const hasNum=/[0-9]/.test(p1);
+  document.getElementById('submit-btn').disabled=!(hasLen&&hasUpper&&hasNum&&p1===p2&&p2.length>0);
 }
 
 async function doSetPassword(){
-  const p1 = document.getElementById('password').value;
-  const p2 = document.getElementById('password2').value;
-  const msg = document.getElementById('msg');
-
-  if(p1 !== p2){msg.className='msg err';msg.textContent='Şifreler eşleşmiyor.';return;}
-
+  const p1=document.getElementById('password').value;
+  const p2=document.getElementById('password2').value;
+  const msg=document.getElementById('msg');
+  if(p1!==p2){msg.className='msg err';msg.textContent='Şifreler eşleşmiyor.';return;}
   msg.className='msg';msg.textContent='Şifre güncelleniyor...';
-  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-btn').disabled=true;
 
-  // Şifreyi güncelle
-  const {error} = await sb.auth.updateUser({password: p1});
+  const {error}=await sb.auth.updateUser({password:p1});
   if(error){
     msg.className='msg err';
     msg.textContent=error.message;
@@ -130,20 +138,20 @@ async function doSetPassword(){
     return;
   }
 
-  // force_password_change = false yap
-  const {data:{session}} = await sb.auth.getSession();
-  await sb.from('members')
-    .update({
-      force_password_change: false,
-      activated_at: new Date().toISOString()
-    })
-    .eq('user_id', session.user.id)
-    .eq('status','active');
+  // members tablosunda force_password_change = false yap
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    await sb.from('members')
+      .update({force_password_change:false,activated_at:new Date().toISOString(),status:'active'})
+      .eq('user_id',session.user.id);
+  }
 
   msg.className='msg ok';
-  msg.textContent='Şifreniz belirlendi! Panele yönlendiriliyorsunuz...';
-  setTimeout(()=>window.location.href='/index.html', 1500);
+  msg.textContent='✓ Şifreniz belirlendi! Panele yönlendiriliyorsunuz...';
+  setTimeout(()=>window.location.href='/index.html',1500);
 }
+
+init();
 </script>
 </body>
 </html>
