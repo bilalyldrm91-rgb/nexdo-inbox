@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nexdo Inbox — Giriş</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.box{background:#fff;border-radius:16px;padding:40px;width:400px;max-width:92vw;box-shadow:0 4px 24px rgba(0,0,0,0.08);}
+.logo{font-size:22px;font-weight:700;color:#5B5FEF;margin-bottom:4px;}
+.sub{font-size:13px;color:#9CA3AF;margin-bottom:28px;}
+.label{font-size:12px;color:#6B7280;margin-bottom:5px;display:block;font-weight:500;}
+.input{width:100%;padding:10px 13px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;font-family:inherit;}
+.input:focus{border-color:#5B5FEF;}
+.btn{width:100%;padding:11px;background:#5B5FEF;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn:hover{background:#4A4ED8;}
+.msg{font-size:12px;text-align:center;margin-top:12px;min-height:18px;}
+.err{color:#B91C1C;}.ok{color:#2D7A3A;}
+.bottom{text-align:center;margin-top:20px;font-size:13px;color:#6B7280;}
+.bottom a{color:#5B5FEF;text-decoration:none;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">Nexdo Inbox</div>
+  <div class="sub">Hesabınıza giriş yapın</div>
+  <label class="label">E-posta</label>
+  <input class="input" id="email" type="email" placeholder="ornek@mail.com"/>
+  <label class="label">Şifre</label>
+  <input class="input" id="password" type="password" placeholder="••••••••"/>
+  <button class="btn" onclick="doLogin()">Giriş Yap</button>
+  <div class="msg" id="msg"></div>
+  <div class="bottom">Hesabınız yok mu? <a href="/register.html">Kayıt Olun</a></div>
+</div>
+<script>
+const SURL = 'https://aqonfhxwzpxtyqecfddi.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
+const sb = supabase.createClient(SURL, SKEY);
 
+async function doLogin(){
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  if(!email||!password){msg.className='msg err';msg.textContent='E-posta ve şifre gerekli.';return;}
+  msg.className='msg';msg.textContent='Giriş yapılıyor...';
+  const {data,error} = await sb.auth.signInWithPassword({email,password});
+  if(error){msg.className='msg err';msg.textContent=error.message;return;}
+  const {data:member} = await sb.from('members')
+    .select('force_password_change,workspace_id')
+    .eq('user_id',data.user.id)
+    .eq('status','active')
+    .single();
+  if(member?.force_password_change){
+    window.location.href='/invite.html';
+  } else {
+    window.location.href='/index.html';
+  }
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session) window.location.href='/index.html';
+});
+</script>
+</body>
+</html>
