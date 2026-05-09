@@ -45,30 +45,37 @@ async function init() {
   const user = session.user;
   document.getElementById('welcome-name').textContent = 'Hoş geldiniz, ' + (user.user_metadata?.full_name || user.email) + '!';
 
-  const { data: member } = await sb.from('members')
-    .select('role, workspace_id, workspaces(name, org_id, organizations(name))')
+  // Önce member kaydını çek
+  const { data: member, error: memErr } = await sb
+    .from('members')
+    .select('role, workspace_id')
     .eq('user_id', user.id)
     .eq('status', 'active')
     .single();
 
-  if (member) {
-    const wsName = member.workspaces?.name || '—';
-    const orgName = member.workspaces?.organizations?.name || '—';
-    document.getElementById('info-box').innerHTML = `
-      <div class="info-row"><span class="info-label">E-posta</span><span class="info-val">${user.email}</span></div>
-      <div class="info-row"><span class="info-label">Organizasyon</span><span class="info-val">${orgName}</span></div>
-      <div class="info-row"><span class="info-label">Şube</span><span class="info-val">${wsName}</span></div>
-      <div class="info-row"><span class="info-label">Rol</span><span class="info-val">${member.role}</span></div>
-    `;
+  if (memErr || !member) {
+    document.getElementById('info-box').innerHTML = '<div style="font-size:13px;color:#B91C1C;padding:8px;">Üyelik bilgisi bulunamadı: ' + (memErr?.message||'') + '</div>';
+    return;
   }
-}
 
-async function doLogout() {
-  await sb.auth.signOut();
-  window.location.href = '/login.html';
-}
+  // Workspace'i ayrı çek
+  const { data: ws, error: wsErr } = await sb
+    .from('workspaces')
+    .select('name, org_id')
+    .eq('id', member.workspace_id)
+    .single();
 
-init();
-</script>
-</body>
-</html>
+  // Organization'ı ayrı çek
+  const { data: org, error: orgErr } = await sb
+    .from('organizations')
+    .select('name')
+    .eq('id', ws?.org_id)
+    .single();
+
+  document.getElementById('info-box').innerHTML = `
+    <div class="info-row"><span class="info-label">E-posta</span><span class="info-val">${user.email}</span></div>
+    <div class="info-row"><span class="info-label">Organizasyon</span><span class="info-val">${org?.name || '—'}</span></div>
+    <div class="info-row"><span class="info-label">Şube</span><span class="info-val">${ws?.name || '—'}</span></div>
+    <div class="info-row"><span class="info-label">Rol</span><span class="info-val">${member.role}</span></div>
+  `;
+}
