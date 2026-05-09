@@ -1,9 +1,10 @@
 {
+  "outputDirectory": "public",
   "rewrites": [
-    { "source": "/login", "destination": "/public/login.html" },
-    { "source": "/register", "destination": "/public/register.html" },
-    { "source": "/invite", "destination": "/public/invite.html" },
-    { "source": "/", "destination": "/public/index.html" }
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/invite", "destination": "/invite.html" },
+    { "source": "/", "destination": "/index.html" }
   ],
   "headers": [
     {
