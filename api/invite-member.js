@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -7,7 +6,10 @@ export default async function handler(req, res) {
   const { email, role, workspace_id, invited_by } = req.body;
   if(!email || !workspace_id) return res.status(400).json({ error: 'E-posta ve workspace gerekli.' });
 
-  const { data: authData, error: authErr } = await sb.auth.admin.inviteUserByEmail(email);
+  const { data: authData, error: authErr } = await sb.auth.admin.inviteUserByEmail(email, {
+    redirectTo: 'https://nexdo-inbox.vercel.app/invite.html'
+  });
+
   if(authErr) return res.status(400).json({ error: authErr.message });
 
   const { error: memErr } = await sb.from('members').insert({
