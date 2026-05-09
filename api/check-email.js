@@ -28,7 +28,6 @@ export default async function handler(req, res) {
     const { email, password, imap_host, imap_port } = channel.credentials || {};
     if(!email || !password) continue;
 
-    // Host belirleme — girilmemişse Gmail varsayılan
     const host = imap_host || 'imap.gmail.com';
     const port = parseInt(imap_port) || 993;
 
@@ -43,12 +42,14 @@ export default async function handler(req, res) {
         const body = mail.text || '';
         const messageId = mail.messageId || `${Date.now()}-${Math.random()}`;
 
+        // Daha önce kaydedilmiş mi?
         const { data: existing } = await sb.from('messages')
           .select('id')
           .eq('external_id', messageId)
           .single();
         if(existing) continue;
 
+        // Conversation bul veya oluştur
         let { data: conv } = await sb.from('conversations')
           .select('id')
           .eq('workspace_id', channel.workspace_id)
@@ -63,17 +64,22 @@ export default async function handler(req, res) {
             status: 'open',
             contact_name: fromName,
             contact_id: fromEmail,
+            last_subject: subject,
             last_message_at: mail.date || new Date().toISOString()
           }).select().single();
           conv = newConv;
         } else {
           await sb.from('conversations')
-            .update({ last_message_at: mail.date || new Date().toISOString() })
+            .update({
+              last_message_at: mail.date || new Date().toISOString(),
+              last_subject: subject
+            })
             .eq('id', conv.id);
         }
 
         if(!conv) continue;
 
+        // Mesajı kaydet
         await sb.from('messages').insert({
           conversation_id: conv.id,
           body: `📧 Konu: ${subject}\n\n${body.slice(0, 2000)}`,
