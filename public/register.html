@@ -137,55 +137,46 @@ function goStep3(){
 }
 
 async function doRegister(){
-  const msg=document.getElementById('msg');
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const fullname=document.getElementById('fname').value.trim()+' '+document.getElementById('lname').value.trim();
-  const orgname=document.getElementById('orgname').value.trim();
-  const sector=document.getElementById('sector').value;
-  const wsname=document.getElementById('wsname').value.trim();
+  const msg = document.getElementById('msg');
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const fullname = document.getElementById('fname').value.trim()+' '+document.getElementById('lname').value.trim();
+  const orgname = document.getElementById('orgname').value.trim();
+  const sector = document.getElementById('sector').value;
+  const wsname = document.getElementById('wsname').value.trim();
 
-  msg.className='msg';msg.textContent='Hesap oluşturuluyor...';
+  msg.className='msg'; msg.textContent='Hesap oluşturuluyor...';
 
-  // 1. Auth kaydı
-  const {data,error}=await sb.auth.signUp({
-    email,password,
-    options:{data:{full_name:fullname}}
-  });
-  if(error){msg.className='msg err';msg.textContent=error.message;return;}
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, fullname, orgname, sector, wsname })
+    });
 
-  const uid=data.user.id;
+    const data = await res.json();
 
-  // 2. Organization oluştur
-  const {data:org,error:orgErr}=await sb.from('organizations')
-    .insert({name:orgname,owner_id:uid,plan:'starter'})
-    .select().single();
-  if(orgErr){msg.className='msg err';msg.textContent='Organizasyon oluşturulamadı.';return;}
+    if (!res.ok || data.error) {
+      msg.className='msg err';
+      msg.textContent = data.error || 'Bir hata oluştu.';
+      return;
+    }
 
-  // 3. İlk workspace oluştur
-  const {data:ws,error:wsErr}=await sb.from('workspaces')
-    .insert({org_id:org.id,name:wsname,sector})
-    .select().single();
-  if(wsErr){msg.className='msg err';msg.textContent='Şube oluşturulamadı.';return;}
+    // Kayıt başarılı, giriş yap
+    const { error: loginErr } = await sb.auth.signInWithPassword({ email, password });
+    if (loginErr) {
+      msg.className='msg ok';
+      msg.textContent='Hesabınız oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...';
+      setTimeout(()=>window.location.href='/login.html', 2000);
+      return;
+    }
 
-  // 4. Owner'ı admin olarak members'a ekle
-  await sb.from('members').insert({
-    user_id:uid,
-    workspace_id:ws.id,
-    role:'admin',
-    status:'active',
-    force_password_change:false,
-    activated_at:new Date().toISOString()
-  });
+    msg.className='msg ok';
+    msg.textContent='Hesabınız oluşturuldu! Panele yönlendiriliyorsunuz...';
+    setTimeout(()=>window.location.href='/index.html', 1500);
 
-  msg.className='msg ok';
-  msg.textContent='Hesabınız oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...';
-  setTimeout(()=>window.location.href='/login.html',2000);
+  } catch(e) {
+    msg.className='msg err';
+    msg.textContent='Bağlantı hatası: ' + e.message;
+  }
 }
-
-sb.auth.getSession().then(({data:{session}})=>{
-  if(session) window.location.href='/index.html';
-});
-</script>
-</body>
-</html>
