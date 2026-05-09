@@ -53,6 +53,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .ch-ig{background:#FCE7F3;color:#9D174D;}
 .ch-mail{background:#FEE2E2;color:#991B1B;}
 .unread{width:7px;height:7px;border-radius:50%;background:#5B5FEF;margin-left:auto;}
+.status-open{font-size:10px;padding:1px 7px;border-radius:20px;background:#EFF6FF;color:#1D4ED8;font-weight:500;}
+.status-assigned{font-size:10px;padding:1px 7px;border-radius:20px;background:#FFFBEB;color:#92400E;font-weight:500;}
+.status-resolved{font-size:10px;padding:1px 7px;border-radius:20px;background:#F0FDF4;color:#166534;font-weight:500;}
+.msg-note .msg-bubble{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E;border-radius:10px;}
+.msg-sender{font-size:10px;color:#9CA3AF;margin-bottom:3px;}
+.msg-wrap.out .msg-sender{text-align:right;}
+.note-btn{padding:10px 14px;background:#FEF3C7;color:#92400E;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.note-btn:hover{background:#FDE68A;}
+.resolved-banner{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 12px;font-size:12px;color:#166534;line-height:1.6;}
+.chat-subject{font-size:11px;color:#9CA3AF;margin-top:2px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .empty-state{padding:40px 20px;text-align:center;color:#9CA3AF;}
 .chat-col{flex:1;display:flex;flex-direction:column;min-width:0;}
 .no-conv{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#9CA3AF;background:#F9FAFB;}
@@ -239,6 +249,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       <div class="chat-info">
         <div class="chat-name" id="chat-name">—</div>
         <div class="chat-sub" id="chat-sub">—</div>
+        <div class="chat-subject" id="chat-subject"></div>
       </div>
       <div class="chat-actions">
         <button class="act-btn" onclick="openModal('assignModal')">👤 Ata</button>
@@ -248,6 +259,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
     <div class="chat-msgs" id="chat-msgs"></div>
     <div class="chat-input">
       <textarea id="chat-textarea" rows="2" placeholder="Yanıt yaz... (Enter: gönder, Shift+Enter: satır atla)" onkeydown="inputKeyDown(event)"></textarea>
+      <button class="note-btn" onclick="sendNote()" title="Dahili Not — müşteriye gitmez">📝 Not</button>
       <button class="send-btn" onclick="sendMessage()">Gönder</button>
     </div>
   </div>
@@ -270,6 +282,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
     <button class="status-btn btn-assign" onclick="openModal('assignModal')">👤 Ata</button>
     <button class="status-btn btn-resolve" onclick="resolveConv()">✓ Çöz</button>
     <button class="status-btn btn-reopen" onclick="reopenConv()">↩ Yeniden Aç</button>
+  </div>
+  <div id="resolved-info" style="display:none;">
+    <div class="info-section">Çözüm</div>
+    <div class="resolved-banner" id="resolved-banner"></div>
   </div>
 </div>
 
@@ -670,7 +686,7 @@ function renderConvList(){
       </div>
       <div class="conv-meta">
         <span class="ch-tag ${tcls[c.channel_type]||''}">${tag[c.channel_type]||c.channel_type||'?'}</span>
-        ${c.status==='open'?'<div class="unread"></div>':''}
+        ${c.status==='open'?'<span class="status-open">Açık</span>':c.status==='assigned'?'<span class="status-assigned">Atandı</span>':c.status==='resolved'?'<span class="status-resolved">Çözüldü</span>':''}
       </div>
     </div>`;
   }).join('');
@@ -698,11 +714,19 @@ async function openConv(convId){
   document.getElementById('chat-av').textContent=(conv.contact_name||'?').charAt(0).toUpperCase();
   document.getElementById('chat-name').textContent=conv.contact_name||'Bilinmeyen';
   document.getElementById('chat-sub').textContent=(conv.channel_type==='email'?'📧 E-posta':conv.channel_type==='whatsapp'?'💬 WhatsApp':'📸 Instagram')+' · '+(conv.contact_id||'');
+  document.getElementById('chat-subject').textContent=conv.last_subject?`Konu: ${conv.last_subject}`:'';
   document.getElementById('inf-name').textContent=conv.contact_name||'—';
   document.getElementById('inf-contact').textContent=conv.contact_id||'—';
   document.getElementById('inf-channel').textContent=conv.channel_type||'—';
   document.getElementById('inf-status').textContent=conv.status==='open'?'Açık':conv.status==='resolved'?'Çözüldü':conv.status==='assigned'?'Atandı':'—';
   document.getElementById('inf-date').textContent=fmtDate(conv.created_at);
+  // Çözüm bilgisi
+  if(conv.status==='resolved'&&conv.resolved_at){
+    document.getElementById('resolved-info').style.display='block';
+    document.getElementById('resolved-banner').textContent=`✓ ${fmtDate(conv.resolved_at)} tarihinde çözüldü`;
+  } else {
+    document.getElementById('resolved-info').style.display='none';
+  }
   renderConvList();
   loadMessages(convId);
 }
@@ -714,15 +738,35 @@ async function loadMessages(convId){
   if(msgs.length===0){document.getElementById('chat-msgs').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:40px;font-size:13px;">Henüz mesaj yok</div>';return;}
   document.getElementById('chat-msgs').innerHTML=msgs.map(m=>{
     const body=cleanMailBody(m.body||'');
-    return`<div class="msg-wrap${m.direction==='outbound'?' out':''}">
-      <div class="msg-av" style="background:${m.direction==='outbound'?'#5B5FEF':'#E5E7EB'};color:${m.direction==='outbound'?'#fff':'#6B7280'};">${m.direction==='outbound'?'S':'M'}</div>
-      <div style="max-width:60%;">
+    const isNote=m.direction==='note';
+    const isOut=m.direction==='outbound';
+    const senderLabel=isNote?'📝 Dahili Not':isOut?'Siz':'Müşteri';
+    const timeLabel=fmtTime(m.created_at);
+    return`<div class="msg-wrap${isOut||isNote?' out':''}${isNote?' msg-note':''}">
+      <div class="msg-av" style="background:${isNote?'#FDE68A':isOut?'#5B5FEF':'#E5E7EB'};color:${isNote?'#92400E':isOut?'#fff':'#6B7280'};">${isNote?'N':isOut?'S':'M'}</div>
+      <div style="max-width:65%;">
+        <div class="msg-sender">${senderLabel}</div>
         <div class="msg-bubble">${body}</div>
-        <div class="msg-time">${fmtTime(m.created_at)}</div>
+        <div class="msg-time">${timeLabel}</div>
       </div>
     </div>`;
   }).join('');
   const el=document.getElementById('chat-msgs');el.scrollTop=el.scrollHeight;
+}
+
+async function sendNote(){
+  const ta=document.getElementById('chat-textarea');
+  const body=ta.value.trim();
+  if(!body||!activeConvId)return;
+  ta.value='';
+  await sb.from('messages').insert({
+    conversation_id:activeConvId,
+    sent_by:user.id,
+    body:`📝 ${body}`,
+    direction:'note',
+    channel_type:activeConv?.channel_type
+  });
+  loadMessages(activeConvId);
 }
 
 async function sendMessage(){
