@@ -1,4 +1,4 @@
-name: Gmail Check
+name: Email Check
 
 on:
   schedule:
@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-gmail:
+  check-email:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Gmail for all workspaces
+      - name: Check all active email channels
         run: |
-          curl -X GET "${{ secrets.VERCEL_URL }}/api/check-gmail?workspace_id=${{ secrets.WORKSPACE_ID }}&days=30"
+          curl -s -X GET "${{ secrets.VERCEL_URL }}/api/check-email?days=30"
