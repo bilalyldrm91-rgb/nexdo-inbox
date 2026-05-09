@@ -9,7 +9,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;min-height:100vh;font-size:14px;}
 .app{display:flex;height:100vh;overflow:hidden;}
-/* SIDEBAR */
 .sidebar{width:220px;background:#fff;border-right:1px solid #E5E7EB;display:flex;flex-direction:column;flex-shrink:0;}
 .sb-logo{padding:16px;font-size:17px;font-weight:700;color:#5B5FEF;border-bottom:1px solid #E5E7EB;cursor:pointer;}
 .sb-logo:hover{color:#4A4ED8;}
@@ -28,7 +27,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .sb-role{color:#9CA3AF;font-size:11px;}
 .logout-btn{width:100%;padding:7px;border:1px solid #E5E7EB;border-radius:8px;background:none;font-size:12px;color:#6B7280;cursor:pointer;font-family:inherit;}
 .logout-btn:hover{background:#FEE2E2;color:#B91C1C;border-color:#FECACA;}
-/* INBOX */
 .inbox-col{width:280px;background:#fff;border-right:1px solid #E5E7EB;display:flex;flex-direction:column;flex-shrink:0;}
 .inbox-header{padding:14px 16px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;}
 .inbox-title{font-size:15px;font-weight:600;}
@@ -56,7 +54,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .ch-mail{background:#FEE2E2;color:#991B1B;}
 .unread{width:7px;height:7px;border-radius:50%;background:#5B5FEF;margin-left:auto;}
 .empty-state{padding:40px 20px;text-align:center;color:#9CA3AF;}
-/* CHAT */
 .chat-col{flex:1;display:flex;flex-direction:column;min-width:0;}
 .no-conv{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#9CA3AF;background:#F9FAFB;}
 .chat-header{padding:14px 20px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:12px;}
@@ -82,7 +79,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .chat-input textarea:focus{border-color:#5B5FEF;}
 .send-btn{padding:10px 20px;background:#5B5FEF;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
 .send-btn:hover{background:#4A4ED8;}
-/* INFO COL */
 .info-col{width:220px;background:#fff;border-left:1px solid #E5E7EB;padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
 .info-section{font-size:10px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px;}
 .info-card{background:#F9FAFB;border-radius:8px;padding:10px 12px;}
@@ -93,7 +89,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .btn-resolve{background:#DCFCE7;color:#166534;}
 .btn-assign{background:#EEEEFF;color:#5B5FEF;}
 .btn-reopen{background:#FEF3C7;color:#92400E;}
-/* SETTINGS */
 .settings-panel{flex:1;overflow-y:auto;display:none;background:#F9FAFB;}
 .settings-inner{max-width:720px;margin:0 auto;padding:28px 24px;}
 .settings-title{font-size:20px;font-weight:600;color:#111827;margin-bottom:6px;}
@@ -104,7 +99,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 .s-card{background:#fff;border-radius:12px;border:1px solid #E5E7EB;padding:20px;margin-bottom:16px;}
-.s-card-title{font-size:14px;font-weight:600;color:#111827;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.s-card-title{font-size:14px;font-weight:600;color:#111827;margin-bottom:4px;}
 .s-card-sub{font-size:12px;color:#9CA3AF;margin-bottom:16px;}
 .form-group{margin-bottom:14px;}
 .form-label{font-size:12px;color:#6B7280;margin-bottom:5px;display:block;font-weight:500;}
@@ -115,7 +110,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .save-btn:hover{background:#4A4ED8;}
 .save-msg{font-size:12px;margin-left:10px;}
 .save-msg.ok{color:#2D7A3A;}.save-msg.err{color:#B91C1C;}
-/* MEMBER LIST */
 .member-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .member-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#F9FAFB;border-radius:8px;border:1px solid #E5E7EB;}
 .m-av{width:34px;height:34px;border-radius:50%;background:#EEEEFF;color:#5B5FEF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
@@ -134,24 +128,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .mini-btn.red:hover{background:#FEE2E2;}
 .mini-btn.green{color:#166534;border-color:#BBF7D0;}
 .mini-btn.green:hover{background:#DCFCE7;}
-.add-form{background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:10px;padding:16px;margin-top:8px;}
-.add-form-title{font-size:12px;font-weight:600;color:#6B7280;margin-bottom:12px;}
-/* ROLES */
-.role-row{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid #F3F4F6;}
-.role-row:last-child{border-bottom:none;}
-.role-name{width:100px;font-size:13px;font-weight:500;}
-.role-perms{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
-.perm-toggle{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#fff;font-size:11px;cursor:pointer;user-select:none;transition:all 0.1s;}
-.perm-toggle.on{background:#EEEEFF;border-color:#5B5FEF;color:#5B5FEF;}
-.perm-toggle input{width:0;height:0;opacity:0;position:absolute;}
-/* WORKSPACE LIST */
 .ws-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#F9FAFB;border-radius:8px;border:1px solid #E5E7EB;margin-bottom:8px;}
 .ws-icon{width:32px;height:32px;border-radius:8px;background:#EEEEFF;color:#5B5FEF;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
 .ws-info{flex:1;}
 .ws-name{font-size:13px;font-weight:500;}
 .ws-meta{font-size:11px;color:#9CA3AF;}
 .active-badge{font-size:10px;background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:20px;}
-/* CHANNELS */
 .channel-card{display:flex;align-items:center;gap:14px;padding:14px;background:#F9FAFB;border-radius:10px;border:1px solid #E5E7EB;margin-bottom:10px;}
 .ch-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .ch-info{flex:1;}
@@ -165,8 +147,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 .api-form{display:none;background:#F9FAFB;border-radius:8px;padding:14px;margin-top:8px;border:1px solid #E5E7EB;}
 .api-form.show{display:block;}
 .webhook-note{background:#FEF3C7;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400E;margin-bottom:12px;line-height:1.6;}
-.sep{height:1px;background:#E5E7EB;margin:16px 0;}
-/* MODAL */
+.perms-table{width:100%;border-collapse:collapse;font-size:12px;}
+.perms-table th{text-align:left;padding:10px 8px;color:#6B7280;font-weight:500;border-bottom:2px solid #E5E7EB;}
+.perms-table th:not(:first-child){text-align:center;}
+.perms-table td{padding:10px 8px;border-bottom:1px solid #F3F4F6;color:#374151;}
+.perms-table td:not(:first-child){text-align:center;}
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:center;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal{background:#fff;border-radius:16px;padding:28px;width:420px;max-width:92vw;}
@@ -181,7 +166,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
 <body>
 <div class="app">
 
-<!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sb-logo" onclick="showInbox()">Nexdo Inbox</div>
   <div class="sb-ws">
@@ -205,9 +189,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
     <span class="sb-badge" id="badge-mail" style="display:none;"></span>
   </div>
   <div class="sb-section">Görünüm</div>
-  <div class="sb-item" onclick="showInbox();filterStatus('open')">📥 Açık</div>
-  <div class="sb-item" onclick="showInbox();filterStatus('assigned')">👤 Atanan</div>
-  <div class="sb-item" onclick="showInbox();filterStatus('resolved')">✓ Çözülen</div>
+  <div class="sb-item" onclick="showInbox();filterStatus('open',this)">📥 Açık</div>
+  <div class="sb-item" onclick="showInbox();filterStatus('assigned',this)">👤 Atanan</div>
+  <div class="sb-item" onclick="showInbox();filterStatus('resolved',this)">✓ Çözülen</div>
   <div class="sb-section">Yönetim</div>
   <div class="sb-item" id="sb-settings" onclick="showSettings('ekip')">⚙ Ayarlar</div>
   <div class="sb-bottom">
@@ -222,7 +206,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
   </div>
 </div>
 
-<!-- INBOX LIST -->
 <div class="inbox-col" id="inbox-col">
   <div class="inbox-header">
     <span class="inbox-title">Gelen Kutusu</span>
@@ -242,7 +225,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
   </div>
 </div>
 
-<!-- CHAT -->
 <div class="chat-col" id="chat-col">
   <div class="no-conv" id="no-conv">
     <div style="font-size:48px;">💬</div>
@@ -263,13 +245,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
     </div>
     <div class="chat-msgs" id="chat-msgs"></div>
     <div class="chat-input">
-      <textarea id="chat-textarea" rows="2" placeholder="Yanıt yaz... (Enter gönderin, Shift+Enter satır atlayın)" onkeydown="inputKeyDown(event)"></textarea>
+      <textarea id="chat-textarea" rows="2" placeholder="Yanıt yaz... (Enter: gönder, Shift+Enter: satır atla)" onkeydown="inputKeyDown(event)"></textarea>
       <button class="send-btn" onclick="sendMessage()">Gönder</button>
     </div>
   </div>
 </div>
 
-<!-- INFO COL -->
 <div class="info-col" id="info-col" style="display:none;">
   <div>
     <div class="info-section">Müşteri</div>
@@ -278,7 +259,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       <div class="info-row"><span class="info-label">Kanal</span><span class="info-val" id="inf-channel">—</span></div>
       <div class="info-row"><span class="info-label">Durum</span><span class="info-val" id="inf-status">—</span></div>
       <div class="info-row"><span class="info-label">Mesaj</span><span class="info-val" id="inf-msgcount">—</span></div>
-      <div class="info-row"><span class="info-label">Açılış</span><span class="info-val" id="inf-date">—</span></div>
+      <div class="info-row"><span class="info-label">Tarih</span><span class="info-val" id="inf-date">—</span></div>
     </div>
   </div>
   <div>
@@ -289,28 +270,26 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
   </div>
 </div>
 
-<!-- SETTINGS PANEL -->
 <div class="settings-panel" id="settings-panel">
   <div class="settings-inner">
     <div class="settings-title">⚙ Ayarlar</div>
     <div class="settings-sub">Ekip, roller, şubeler ve entegrasyonları buradan yönetin.</div>
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('ekip',this)">👥 Ekip Üyeleri</button>
-      <button class="tab-btn" onclick="switchTab('roller',this)">🔐 Roller</button>
-      <button class="tab-btn" onclick="switchTab('subeler',this)">🏢 Şubeler</button>
-      <button class="tab-btn" onclick="switchTab('entegrasyon',this)">🔗 Entegrasyonlar</button>
+      <button class="tab-btn active" id="tbtn-ekip" onclick="switchTab('ekip',this)">👥 Ekip</button>
+      <button class="tab-btn" id="tbtn-roller" onclick="switchTab('roller',this)">🔐 Roller</button>
+      <button class="tab-btn" id="tbtn-subeler" onclick="switchTab('subeler',this)">🏢 Şubeler</button>
+      <button class="tab-btn" id="tbtn-entegrasyon" onclick="switchTab('entegrasyon',this)">🔗 Entegrasyonlar</button>
     </div>
 
-    <!-- EKIP -->
     <div class="tab-content active" id="tab-ekip">
       <div class="s-card">
         <div class="s-card-title">👥 Mevcut Ekip</div>
-        <div class="s-card-sub">Bu şubedeki tüm üyeler. Rol değişikliği ve pasifize işlemlerini buradan yapın.</div>
+        <div class="s-card-sub">Bu şubedeki tüm üyeler.</div>
         <div class="member-list" id="member-list"><div style="color:#9CA3AF;font-size:13px;">Yükleniyor...</div></div>
       </div>
       <div class="s-card">
         <div class="s-card-title">+ Yeni Üye Davet Et</div>
-        <div class="s-card-sub">Davet e-postası gönderilir. Kişi ilk girişte şifresini belirler.</div>
+        <div class="s-card-sub">Kişiye davet maili gönderilir, ilk girişte şifresini belirler.</div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">E-posta</label>
@@ -320,7 +299,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
             <label class="form-label">Rol</label>
             <select class="form-input" id="inv-role">
               <option value="agent">Agent — Yanıt yazar, atar</option>
-              <option value="manager">Manager — Ekip yönetir, raporlar</option>
+              <option value="manager">Manager — Ekip yönetir</option>
               <option value="viewer">Viewer — Sadece okur</option>
             </select>
           </div>
@@ -330,23 +309,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       </div>
     </div>
 
-    <!-- ROLLER -->
     <div class="tab-content" id="tab-roller">
       <div class="s-card">
         <div class="s-card-title">🔐 Rol İzinleri</div>
-        <div class="s-card-sub">Her rolün hangi işlemleri yapabileceğini belirleyin. Admin her zaman tüm izinlere sahiptir.</div>
+        <div class="s-card-sub">Her rolün hangi işlemleri yapabileceğini belirleyin. Admin her zaman tam yetkilidir.</div>
         <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <table class="perms-table">
             <thead>
-              <tr style="border-bottom:2px solid #E5E7EB;">
-                <th style="text-align:left;padding:10px 8px;color:#6B7280;font-weight:500;width:180px;">İzin</th>
-                <th style="text-align:center;padding:10px 8px;color:#991B1B;">Admin</th>
-                <th style="text-align:center;padding:10px 8px;color:#92400E;">Manager</th>
-                <th style="text-align:center;padding:10px 8px;color:#5B5FEF;">Agent</th>
-                <th style="text-align:center;padding:10px 8px;color:#166534;">Viewer</th>
+              <tr>
+                <th style="width:200px;">İzin</th>
+                <th style="color:#991B1B;">Admin</th>
+                <th style="color:#92400E;">Manager</th>
+                <th style="color:#5B5FEF;">Agent</th>
+                <th style="color:#166534;">Viewer</th>
               </tr>
             </thead>
-            <tbody id="perms-table"></tbody>
+            <tbody id="perms-body"></tbody>
           </table>
         </div>
         <div style="margin-top:16px;">
@@ -356,7 +334,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       </div>
     </div>
 
-    <!-- SUBELER -->
     <div class="tab-content" id="tab-subeler">
       <div class="s-card">
         <div class="s-card-title">🏢 Mevcut Şubeler</div>
@@ -365,7 +342,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       </div>
       <div class="s-card">
         <div class="s-card-title">+ Yeni Şube Ekle</div>
-        <div class="s-card-sub">Yeni şube ekledikten sonra üye davet edip kanal bağlayabilirsiniz.</div>
+        <div class="s-card-sub">Yeni şube ekleyip ayrı kanal ve ekip tanımlayabilirsiniz.</div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Şube Adı</label>
@@ -391,16 +368,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
       </div>
     </div>
 
-    <!-- ENTEGRASYON -->
     <div class="tab-content" id="tab-entegrasyon">
-
-      <!-- WHATSAPP -->
       <div class="s-card">
         <div class="channel-card">
           <div class="ch-icon" style="background:#DCFCE7;">💬</div>
           <div class="ch-info">
             <div class="ch-name">WhatsApp Business</div>
-            <div class="ch-desc">Meta Cloud API — gelen mesajlar otomatik panele düşer</div>
+            <div class="ch-desc">Meta Cloud API ile gelen mesajları alın</div>
           </div>
           <span class="ch-status st-off" id="wa-status">Bağlı Değil</span>
           <button class="connect-btn" onclick="toggleForm('wa-form')">Ayarla</button>
@@ -421,25 +395,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
             <input class="form-input" id="wa-token" type="password" placeholder="Meta System User Token"/>
           </div>
           <div class="form-group">
-            <label class="form-label">Webhook Verify Token (kendiniz belirleyin)</label>
+            <label class="form-label">Webhook Verify Token</label>
             <input class="form-input" id="wa-verify" placeholder="Örn: nexdo_abc123"/>
           </div>
-          <div class="webhook-note">
-            📌 Meta Developer → WhatsApp → Webhook ayarında şu URL'yi girin:<br>
-            <strong id="wa-webhook-url" style="font-family:monospace;word-break:break-all;"></strong>
-          </div>
+          <div class="webhook-note">📌 Meta Developer → WhatsApp → Webhook adresine girin:<br><strong id="wa-webhook-url" style="font-family:monospace;word-break:break-all;font-size:11px;"></strong></div>
           <button class="save-btn" onclick="saveChannel('whatsapp')">Kaydet</button>
           <span class="save-msg" id="wa-msg"></span>
         </div>
       </div>
 
-      <!-- INSTAGRAM -->
       <div class="s-card">
         <div class="channel-card">
           <div class="ch-icon" style="background:#FCE7F3;">📸</div>
           <div class="ch-info">
             <div class="ch-name">Instagram</div>
-            <div class="ch-desc">DM ve yorum bildirimlerini panelden yönetin</div>
+            <div class="ch-desc">DM ve yorum bildirimlerini yönetin</div>
           </div>
           <span class="ch-status st-off" id="ig-status">Bağlı Değil</span>
           <button class="connect-btn" onclick="toggleForm('ig-form')">Ayarla</button>
@@ -447,7 +417,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
         <div class="api-form" id="ig-form">
           <div class="form-group">
             <label class="form-label">Instagram Business Account ID</label>
-            <input class="form-input" id="ig-account-id" placeholder="Instagram Graph API'den alın"/>
+            <input class="form-input" id="ig-account-id" placeholder="Graph API'den alın"/>
           </div>
           <div class="form-group">
             <label class="form-label">Page Access Token</label>
@@ -457,22 +427,18 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
             <label class="form-label">Webhook Verify Token</label>
             <input class="form-input" id="ig-verify" placeholder="Örn: nexdo_ig_abc123"/>
           </div>
-          <div class="webhook-note">
-            📌 Meta Developer → Instagram → Webhook ayarında şu URL'yi girin:<br>
-            <strong id="ig-webhook-url" style="font-family:monospace;word-break:break-all;"></strong>
-          </div>
+          <div class="webhook-note">📌 Meta Developer → Instagram → Webhook adresine girin:<br><strong id="ig-webhook-url" style="font-family:monospace;word-break:break-all;font-size:11px;"></strong></div>
           <button class="save-btn" onclick="saveChannel('instagram')">Kaydet</button>
           <span class="save-msg" id="ig-msg"></span>
         </div>
       </div>
 
-      <!-- EMAIL -->
       <div class="s-card">
         <div class="channel-card">
           <div class="ch-icon" style="background:#FEE2E2;">📧</div>
           <div class="ch-info">
             <div class="ch-name">E-posta (SMTP)</div>
-            <div class="ch-desc">Gmail, Outlook veya özel SMTP sunucusu</div>
+            <div class="ch-desc">Gmail, Outlook veya özel sunucu</div>
           </div>
           <span class="ch-status st-off" id="mail-status">Bağlı Değil</span>
           <button class="connect-btn" onclick="toggleForm('mail-form')">Ayarla</button>
@@ -489,7 +455,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">E-posta Adresi</label>
+            <label class="form-label">E-posta</label>
             <input class="form-input" id="mail-email" placeholder="info@isletme.com"/>
           </div>
           <div class="form-group">
@@ -500,17 +466,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
           <span class="save-msg" id="mail-msg"></span>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- MODAL: ATA -->
+<!-- MODALS -->
 <div class="modal-overlay" id="assignModal">
   <div class="modal">
     <div class="modal-title">👤 Konuşmayı Ata <button class="modal-close" onclick="closeModal('assignModal')">×</button></div>
     <div class="form-group">
-      <label class="form-label">Ekip Üyesi</label>
+      <label class="form-label">Ekip Üyesi Seç</label>
       <select class="form-input" id="assign-select"></select>
     </div>
     <button class="modal-btn" onclick="doAssign()">Ata</button>
@@ -518,7 +483,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
   </div>
 </div>
 
-<!-- MODAL: ROL -->
 <div class="modal-overlay" id="roleModal">
   <div class="modal">
     <div class="modal-title">Rol Değiştir <button class="modal-close" onclick="closeModal('roleModal')">×</button></div>
@@ -536,11 +500,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F3F4F6;color:#111827;m
   </div>
 </div>
 
-<!-- MODAL: PASSİF -->
 <div class="modal-overlay" id="suspendModal">
   <div class="modal">
     <div class="modal-title">Kullanıcıyı Pasifize Et <button class="modal-close" onclick="closeModal('suspendModal')">×</button></div>
-    <div style="font-size:13px;color:#6B7280;margin-bottom:20px;line-height:1.6;">Bu kullanıcı sisteme giriş yapamaz. Tüm mesaj ve işlem geçmişi korunur. İstediğiniz zaman geri aktif edebilirsiniz.</div>
+    <div style="font-size:13px;color:#6B7280;margin-bottom:20px;line-height:1.6;">Bu kullanıcı sisteme giriş yapamaz. Tüm mesaj ve işlem geçmişi korunur. İstediğiniz zaman aktif edebilirsiniz.</div>
     <button class="modal-btn red" onclick="confirmSuspend()">Pasifize Et</button>
     <div class="modal-msg" id="suspend-msg"></div>
   </div>
@@ -552,55 +515,96 @@ const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 const sb=supabase.createClient(SURL,SKEY);
 
 let user=null,myMember=null,workspaces=[],conversations=[],wsMembers=[];
-let activeWsId=null,activeConvId=null,channelFilter='all',statusFilter='all';
-let selectedMemberId=null,currentOrgId=null;
+let activeWsId=null,activeConvId=null,currentOrgId=null;
+let channelFilter='all',statusFilter='all',selectedMemberId=null;
 
-const PERMS_DEFAULT={
+const PERM_LABELS={
+  conv_view:'Konuşma görme',
+  conv_reply:'Yanıt yazma',
+  conv_assign:'Atama yapma',
+  reports:'Raporları görme',
+  team_manage:'Ekip üyesi yönetimi',
+  channel_connect:'Kanal bağlama',
+  role_change:'Rol değiştirme'
+};
+
+let perms={
   manager:{conv_view:true,conv_reply:true,conv_assign:true,reports:true,team_manage:true,channel_connect:false,role_change:false},
   agent:{conv_view:true,conv_reply:true,conv_assign:true,reports:false,team_manage:false,channel_connect:false,role_change:false},
   viewer:{conv_view:true,conv_reply:false,conv_assign:false,reports:false,team_manage:false,channel_connect:false,role_change:false}
 };
-const PERM_LABELS={conv_view:'Konuşma görme',conv_reply:'Yanıt yazma',conv_assign:'Atama yapma',reports:'Raporlar',team_manage:'Ekip yönetimi',channel_connect:'Kanal bağlama',role_change:'Rol değiştirme'};
-let perms={...PERMS_DEFAULT};
 
 async function init(){
   const {data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='/login.html';return;}
   user=session.user;
+
   const name=user.user_metadata?.full_name||user.email;
   document.getElementById('sb-name').textContent=name;
   document.getElementById('sb-av').textContent=name.charAt(0).toUpperCase();
 
-  const {data:members}=await sb.from('members').select('id,role,workspace_id').eq('user_id',user.id).eq('status','active');
-  if(!members||members.length===0){document.getElementById('sb-role').textContent='Üyelik yok';return;}
+  // Üyelikleri çek
+  const {data:members}=await sb.from('members')
+    .select('id,role,workspace_id')
+    .eq('user_id',user.id)
+    .eq('status','active');
+
+  if(!members||members.length===0){
+    document.getElementById('sb-role').textContent='Üyelik yok';
+    return;
+  }
   myMember=members[0];
   document.getElementById('sb-role').textContent=myMember.role;
 
+  // Workspace'leri çek
   const wsIds=members.map(m=>m.workspace_id);
-  const {data:wsList}=await sb.from('workspaces').select('id,name,org_id,sector').in('id',wsIds);
+  const {data:wsList}=await sb.from('workspaces')
+    .select('id,name,org_id,sector')
+    .in('id',wsIds);
   workspaces=wsList||[];
 
+  // Dropdown doldur
   const sel=document.getElementById('ws-select');
   sel.innerHTML=workspaces.map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
-  activeWsId=workspaces[0]?.id;
-  currentOrgId=workspaces[0]?.org_id;
 
+  activeWsId=workspaces[0]?.id;
+
+  // org_id'yi organizations tablosundan çek
+  if(user){
+    const {data:orgData}=await sb.from('organizations')
+      .select('id')
+      .eq('owner_id',user.id)
+      .single();
+    if(orgData){
+      currentOrgId=orgData.id;
+    } else {
+      currentOrgId=workspaces[0]?.org_id||null;
+    }
+  }
+
+  // Webhook URL'leri
   document.getElementById('wa-webhook-url').textContent=location.origin+'/api/webhook-whatsapp';
   document.getElementById('ig-webhook-url').textContent=location.origin+'/api/webhook-instagram';
 
-  if(activeWsId){loadConversations();loadChannelStatus();}
+  // Perms tablosu render et
   renderPermsTable();
+
+  if(activeWsId){
+    loadConversations();
+    loadChannelStatus();
+  }
 }
 
 function switchWorkspace(wsId){
   activeWsId=wsId;
   const ws=workspaces.find(w=>w.id===wsId);
-  currentOrgId=ws?.org_id;
+  currentOrgId=ws?.org_id||currentOrgId;
   activeConvId=null;
   document.getElementById('no-conv').style.display='flex';
   document.getElementById('chat-area').style.display='none';
   document.getElementById('info-col').style.display='none';
-  loadConversations();loadChannelStatus();
+  loadConversations();
+  loadChannelStatus();
 }
 
 function showInbox(){
@@ -619,22 +623,27 @@ function showSettings(tab){
   document.getElementById('settings-panel').style.display='block';
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('sb-settings').classList.add('active');
-  switchTab(tab,document.querySelector('.tab-bar .tab-btn'));
-  loadMembers();loadWsList();loadChannelStatus();
+  switchTab(tab);
+  loadMembers();
+  loadWsList();
+  loadChannelStatus();
 }
 
-function switchTab(tab,el){
+function switchTab(tab){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   const tc=document.getElementById('tab-'+tab);
+  const tb=document.getElementById('tbtn-'+tab);
   if(tc)tc.classList.add('active');
-  if(el)el.classList.add('active');
-  else{document.querySelectorAll('.tab-btn').forEach(b=>{if(b.onclick&&b.onclick.toString().includes("'"+tab+"'"))b.classList.add('active');});}
+  if(tb)tb.classList.add('active');
 }
 
 // CONVERSATIONS
 async function loadConversations(){
-  const {data}=await sb.from('conversations').select('*').eq('workspace_id',activeWsId).order('last_message_at',{ascending:false});
+  const {data}=await sb.from('conversations')
+    .select('*')
+    .eq('workspace_id',activeWsId)
+    .order('last_message_at',{ascending:false});
   conversations=data||[];
   renderConvList();
   updateBadges();
@@ -647,7 +656,10 @@ function renderConvList(){
   if(statusFilter!=='all')f=f.filter(c=>c.status===statusFilter);
   if(search)f=f.filter(c=>(c.contact_name||'').toLowerCase().includes(search));
   document.getElementById('conv-count').textContent=f.length+' konuşma';
-  if(f.length===0){document.getElementById('conv-list').innerHTML='<div class="empty-state"><div style="font-size:32px;margin-bottom:8px;">📭</div><div>Konuşma bulunamadı</div></div>';return;}
+  if(f.length===0){
+    document.getElementById('conv-list').innerHTML='<div class="empty-state"><div style="font-size:32px;margin-bottom:8px;">📭</div><div>Konuşma bulunamadı</div></div>';
+    return;
+  }
   const clr={whatsapp:'#25D366',instagram:'#E1306C',email:'#EA4335'};
   const tag={whatsapp:'WA',instagram:'IG',email:'Mail'};
   const tcls={whatsapp:'ch-wa',instagram:'ch-ig',email:'ch-mail'};
@@ -669,11 +681,11 @@ function renderConvList(){
 
 function updateBadges(){
   const open=conversations.filter(c=>c.status==='open');
-  const wa=open.filter(c=>c.channel_type==='whatsapp');
-  const ig=open.filter(c=>c.channel_type==='instagram');
-  const mail=open.filter(c=>c.channel_type==='email');
   const setB=(id,n)=>{const el=document.getElementById(id);el.textContent=n;el.style.display=n>0?'':'none';};
-  setB('badge-all',open.length);setB('badge-wa',wa.length);setB('badge-ig',ig.length);setB('badge-mail',mail.length);
+  setB('badge-all',open.length);
+  setB('badge-wa',open.filter(c=>c.channel_type==='whatsapp').length);
+  setB('badge-ig',open.filter(c=>c.channel_type==='instagram').length);
+  setB('badge-mail',open.filter(c=>c.channel_type==='email').length);
 }
 
 async function openConv(convId){
@@ -681,7 +693,8 @@ async function openConv(convId){
   const conv=conversations.find(c=>c.id===convId);
   if(!conv)return;
   document.getElementById('no-conv').style.display='none';
-  const ca=document.getElementById('chat-area');ca.style.display='flex';ca.style.flexDirection='column';
+  const ca=document.getElementById('chat-area');
+  ca.style.display='flex';ca.style.flexDirection='column';
   document.getElementById('info-col').style.display='flex';
   const clr={whatsapp:'#25D366',instagram:'#E1306C',email:'#EA4335'};
   document.getElementById('chat-av').style.background=clr[conv.channel_type]||'#9CA3AF';
@@ -692,14 +705,18 @@ async function openConv(convId){
   document.getElementById('inf-channel').textContent=conv.channel_type||'—';
   document.getElementById('inf-status').textContent=conv.status||'—';
   document.getElementById('inf-date').textContent=fmtDate(conv.created_at);
-  renderConvList();loadMessages(convId);
+  renderConvList();
+  loadMessages(convId);
 }
 
 async function loadMessages(convId){
   const {data}=await sb.from('messages').select('*').eq('conversation_id',convId).order('created_at',{ascending:true});
   const msgs=data||[];
   document.getElementById('inf-msgcount').textContent=msgs.length;
-  if(msgs.length===0){document.getElementById('chat-msgs').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:40px;font-size:13px;">Henüz mesaj yok</div>';return;}
+  if(msgs.length===0){
+    document.getElementById('chat-msgs').innerHTML='<div style="text-align:center;color:#9CA3AF;padding:40px;font-size:13px;">Henüz mesaj yok</div>';
+    return;
+  }
   document.getElementById('chat-msgs').innerHTML=msgs.map(m=>`
     <div class="msg-wrap${m.direction==='outbound'?' out':''}">
       <div class="msg-av" style="background:${m.direction==='outbound'?'#5B5FEF':'#E5E7EB'};color:${m.direction==='outbound'?'#fff':'#6B7280'};">${m.direction==='outbound'?'S':'M'}</div>
@@ -716,7 +733,8 @@ async function sendMessage(){
   const conv=conversations.find(c=>c.id===activeConvId);
   await sb.from('messages').insert({conversation_id:activeConvId,sent_by:user.id,body,direction:'outbound',channel_type:conv?.channel_type});
   await sb.from('conversations').update({last_message_at:new Date().toISOString()}).eq('id',activeConvId);
-  loadMessages(activeConvId);loadConversations();
+  loadMessages(activeConvId);
+  loadConversations();
 }
 
 async function resolveConv(){
@@ -737,6 +755,7 @@ async function openModal(id){
     const {data}=await sb.from('members').select('id,user_id,role').eq('workspace_id',activeWsId).eq('status','active');
     wsMembers=data||[];
     document.getElementById('assign-select').innerHTML=wsMembers.map(m=>`<option value="${m.id}">${m.user_id===user.id?'Bana Ata':'Üye ('+m.role+')'}</option>`).join('');
+    document.getElementById('assign-msg').textContent='';
   }
   document.getElementById(id).classList.add('show');
 }
@@ -747,23 +766,26 @@ async function doAssign(){
   const msg=document.getElementById('assign-msg');
   if(!member){msg.className='modal-msg err';msg.textContent='Üye seçin.';return;}
   await sb.from('conversations').update({assigned_to:member.user_id,status:'assigned'}).eq('id',activeConvId);
-  msg.className='modal-msg ok';msg.textContent='Atandı!';
+  msg.className='modal-msg ok';msg.textContent='✓ Atandı!';
   setTimeout(()=>{closeModal('assignModal');loadConversations();openConv(activeConvId);},800);
 }
 
 // MEMBERS
 async function loadMembers(){
   const {data}=await sb.from('members').select('id,role,status,user_id').eq('workspace_id',activeWsId);
-  if(!data||data.length===0){document.getElementById('member-list').innerHTML='<div style="color:#9CA3AF;font-size:13px;">Üye bulunamadı</div>';return;}
+  if(!data||data.length===0){
+    document.getElementById('member-list').innerHTML='<div style="color:#9CA3AF;font-size:13px;">Üye bulunamadı</div>';
+    return;
+  }
   const rcls={admin:'r-admin',manager:'r-manager',agent:'r-agent',viewer:'r-viewer'};
   document.getElementById('member-list').innerHTML=data.map(m=>`
     <div class="member-item">
       <div class="m-av" style="background:${m.status==='suspended'?'#F3F4F6':'#EEEEFF'};color:${m.status==='suspended'?'#9CA3AF':'#5B5FEF'};">
-        ${m.user_id?.slice(0,2)?.toUpperCase()||'?'}
+        ${(m.user_id||'??').slice(0,2).toUpperCase()}
       </div>
       <div class="m-info">
-        <div class="m-name">${m.user_id===user.id?'Siz':'Üye'} ${m.status==='suspended'?'<span style="font-size:10px;color:#9CA3AF;">(Pasif)</span>':''}</div>
-        <div class="m-meta">${m.role} · ${m.status}</div>
+        <div class="m-name">${m.user_id===user.id?'Siz':'Üye'} ${m.status==='suspended'?'<span style="font-size:10px;color:#9CA3AF;background:#F3F4F6;padding:1px 6px;border-radius:10px;">Pasif</span>':''}</div>
+        <div class="m-meta">${m.role} · ${m.status==='active'?'Aktif':m.status==='pending'?'Davet Bekleniyor':'Pasif'}</div>
       </div>
       <span class="m-role ${rcls[m.role]||''}">${m.role}</span>
       <div class="m-actions">
@@ -783,12 +805,14 @@ async function inviteMember(){
   const msg=document.getElementById('inv-msg');
   if(!email){msg.className='save-msg err';msg.textContent='E-posta gerekli.';return;}
   msg.className='save-msg';msg.textContent='Gönderiliyor...';
-  const res=await fetch('/api/invite-member',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,role,workspace_id:activeWsId,invited_by:user.id})});
-  const data=await res.json();
-  if(data.error){msg.className='save-msg err';msg.textContent=data.error;return;}
-  msg.className='save-msg ok';msg.textContent='✓ Davet gönderildi!';
-  document.getElementById('inv-email').value='';
-  setTimeout(()=>{msg.textContent='';loadMembers();},2000);
+  try{
+    const res=await fetch('/api/invite-member',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,role,workspace_id:activeWsId,invited_by:user.id})});
+    const data=await res.json();
+    if(data.error){msg.className='save-msg err';msg.textContent=data.error;return;}
+    msg.className='save-msg ok';msg.textContent='✓ Davet gönderildi!';
+    document.getElementById('inv-email').value='';
+    setTimeout(()=>{msg.textContent='';loadMembers();},2000);
+  }catch(e){msg.className='save-msg err';msg.textContent='Bağlantı hatası.';}
 }
 
 function openRoleModal(memberId,currentRole){
@@ -826,31 +850,26 @@ async function activateMember(memberId){
   loadMembers();
 }
 
-// ROLES & PERMS TABLE
+// PERMS TABLE
 function renderPermsTable(){
   const roles=['manager','agent','viewer'];
-  const permKeys=Object.keys(PERM_LABELS);
-  document.getElementById('perms-table').innerHTML=permKeys.map(pkey=>`
-    <tr style="border-bottom:1px solid #F3F4F6;">
-      <td style="padding:10px 8px;font-size:12px;color:#374151;">${PERM_LABELS[pkey]}</td>
-      <td style="text-align:center;padding:10px 8px;">
-        <span style="color:#166534;font-size:16px;">✓</span>
-      </td>
-      ${roles.map(role=>`
-        <td style="text-align:center;padding:10px 8px;">
-          <input type="checkbox" 
-            id="perm-${role}-${pkey}" 
-            ${perms[role][pkey]?'checked':''}
-            onchange="perms['${role}']['${pkey}']=this.checked"
-            style="width:16px;height:16px;accent-color:#5B5FEF;cursor:pointer;"
-          />
-        </td>
-      `).join('')}
+  const keys=Object.keys(PERM_LABELS);
+  document.getElementById('perms-body').innerHTML=keys.map(k=>`
+    <tr>
+      <td>${PERM_LABELS[k]}</td>
+      <td><span style="color:#166534;font-size:16px;">✓</span></td>
+      ${roles.map(r=>`
+        <td>
+          <input type="checkbox" ${perms[r][k]?'checked':''}
+            onchange="perms['${r}']['${k}']=this.checked"
+            style="width:16px;height:16px;accent-color:#5B5FEF;cursor:pointer;"/>
+        </td>`).join('')}
     </tr>`).join('');
 }
 
 async function savePerms(){
   const msg=document.getElementById('perms-msg');
+  if(!activeWsId){msg.className='save-msg err';msg.textContent='Workspace seçili değil.';return;}
   msg.className='save-msg';msg.textContent='Kaydediliyor...';
   const {error}=await sb.from('workspaces').update({role_permissions:perms}).eq('id',activeWsId);
   if(error){msg.className='save-msg err';msg.textContent=error.message;return;}
@@ -860,8 +879,15 @@ async function savePerms(){
 
 // WORKSPACES
 async function loadWsList(){
-  const {data}=await sb.from('workspaces').select('id,name,sector').in('id',workspaces.map(w=>w.id));
-  if(!data||data.length===0){document.getElementById('ws-list').innerHTML='<div style="color:#9CA3AF;font-size:13px;">Şube bulunamadı</div>';return;}
+  if(!currentOrgId){
+    document.getElementById('ws-list').innerHTML='<div style="color:#9CA3AF;font-size:13px;">Organizasyon yüklenemedi.</div>';
+    return;
+  }
+  const {data}=await sb.from('workspaces').select('id,name,sector').eq('org_id',currentOrgId);
+  if(!data||data.length===0){
+    document.getElementById('ws-list').innerHTML='<div style="color:#9CA3AF;font-size:13px;">Şube bulunamadı</div>';
+    return;
+  }
   document.getElementById('ws-list').innerHTML=data.map(w=>`
     <div class="ws-item">
       <div class="ws-icon">🏢</div>
@@ -878,28 +904,45 @@ async function addWorkspace(){
   const sector=document.getElementById('new-ws-sector').value;
   const msg=document.getElementById('ws-msg');
   if(!name){msg.className='save-msg err';msg.textContent='Şube adı gerekli.';return;}
-  if(!currentOrgId){msg.className='save-msg err';msg.textContent='Organizasyon bulunamadı: '+currentOrgId;return;}
+  if(!currentOrgId){msg.className='save-msg err';msg.textContent='Organizasyon bulunamadı.';return;}
   msg.className='save-msg';msg.textContent='Oluşturuluyor...';
-  const res=await fetch('/api/add-workspace',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,sector,org_id:currentOrgId,user_id:user.id})});
-  const data=await res.json();
-  if(data.error){msg.className='save-msg err';msg.textContent=data.error;return;}
-  msg.className='save-msg ok';msg.textContent='✓ Şube eklendi!';
-  document.getElementById('new-ws-name').value='';
-  const {data:wsList}=await sb.from('workspaces').select('id,name,org_id,sector').eq('org_id',currentOrgId);
-  workspaces=wsList||[];
-  document.getElementById('ws-select').innerHTML=workspaces.map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
-  loadWsList();
-  setTimeout(()=>msg.textContent='',2000);
+  try{
+    const res=await fetch('/api/add-workspace',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,sector,org_id:currentOrgId,user_id:user.id})});
+    const data=await res.json();
+    if(data.error){msg.className='save-msg err';msg.textContent=data.error;return;}
+    msg.className='save-msg ok';msg.textContent='✓ Şube eklendi!';
+    document.getElementById('new-ws-name').value='';
+    const {data:wsList}=await sb.from('workspaces').select('id,name,org_id,sector').eq('org_id',currentOrgId);
+    workspaces=wsList||[];
+    document.getElementById('ws-select').innerHTML=workspaces.map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
+    loadWsList();
+    setTimeout(()=>msg.textContent='',2000);
+  }catch(e){msg.className='save-msg err';msg.textContent='Bağlantı hatası.';}
 }
 
 // CHANNELS
 async function loadChannelStatus(){
-  const {data}=await sb.from('channels').select('type,active').eq('workspace_id',activeWsId);
+  const {data}=await sb.from('channels').select('type,active,credentials').eq('workspace_id',activeWsId);
   if(!data)return;
   data.forEach(ch=>{
     const id=ch.type==='whatsapp'?'wa-status':ch.type==='instagram'?'ig-status':'mail-status';
     const el=document.getElementById(id);
     if(el&&ch.active){el.textContent='Bağlı';el.className='ch-status st-on';}
+    // Kayıtlı değerleri forma doldur
+    if(ch.type==='whatsapp'&&ch.credentials){
+      document.getElementById('wa-phone-id').value=ch.credentials.phone_number_id||'';
+      document.getElementById('wa-account-id').value=ch.credentials.account_id||'';
+      document.getElementById('wa-verify').value=ch.credentials.verify_token||'';
+    }
+    if(ch.type==='instagram'&&ch.credentials){
+      document.getElementById('ig-account-id').value=ch.credentials.account_id||'';
+      document.getElementById('ig-verify').value=ch.credentials.verify_token||'';
+    }
+    if(ch.type==='email'&&ch.credentials){
+      document.getElementById('mail-host').value=ch.credentials.host||'';
+      document.getElementById('mail-port').value=ch.credentials.port||'';
+      document.getElementById('mail-email').value=ch.credentials.email||'';
+    }
   });
 }
 
@@ -921,7 +964,8 @@ async function saveChannel(type){
   const {error}=await sb.from('channels').upsert({workspace_id:activeWsId,type,credentials,active:true},{onConflict:'workspace_id,type'});
   if(error){msg.className='save-msg err';msg.textContent=error.message;return;}
   msg.className='save-msg ok';msg.textContent='✓ Kaydedildi!';
-  loadChannelStatus();setTimeout(()=>msg.textContent='',2000);
+  loadChannelStatus();
+  setTimeout(()=>msg.textContent='',2000);
 }
 
 function toggleForm(id){document.getElementById(id).classList.toggle('show');}
