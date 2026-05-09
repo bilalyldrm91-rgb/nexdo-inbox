@@ -1,191 +1,48 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nexdo Inbox — Kayıt</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.box{background:#fff;border-radius:16px;padding:40px;width:440px;max-width:92vw;box-shadow:0 4px 24px rgba(0,0,0,0.08);}
-.logo{font-size:22px;font-weight:700;color:#5B5FEF;margin-bottom:4px;}
-.sub{font-size:13px;color:#9CA3AF;margin-bottom:28px;}
-.label{font-size:12px;color:#6B7280;margin-bottom:5px;display:block;font-weight:500;}
-.input{width:100%;padding:10px 13px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;font-family:inherit;}
-.input:focus{border-color:#5B5FEF;}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn{width:100%;padding:11px;background:#5B5FEF;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
-.btn:hover{background:#4A4ED8;}
-.msg{font-size:12px;text-align:center;margin-top:12px;min-height:18px;}
-.err{color:#B91C1C;}.ok{color:#2D7A3A;}
-.bottom{text-align:center;margin-top:20px;font-size:13px;color:#6B7280;}
-.bottom a{color:#5B5FEF;text-decoration:none;font-weight:500;}
-.step{display:none;}
-.step.active{display:block;}
-.step-indicator{display:flex;gap:6px;margin-bottom:24px;}
-.step-dot{flex:1;height:3px;border-radius:2px;background:#E5E7EB;}
-.step-dot.done{background:#5B5FEF;}
-</style>
-</head>
-<body>
-<div class="box">
-  <div class="logo">Nexdo Inbox</div>
-  <div class="sub">Yeni hesap oluşturun</div>
-  <div class="step-indicator">
-    <div class="step-dot done" id="dot1"></div>
-    <div class="step-dot" id="dot2"></div>
-    <div class="step-dot" id="dot3"></div>
-  </div>
+import { createClient } from '@supabase/supabase-js';
 
-  <!-- ADIM 1: Kişisel bilgiler -->
-  <div class="step active" id="step1">
-    <div class="row2">
-      <div>
-        <label class="label">Ad</label>
-        <input class="input" id="fname" type="text" placeholder="Ahmet"/>
-      </div>
-      <div>
-        <label class="label">Soyad</label>
-        <input class="input" id="lname" type="text" placeholder="Yılmaz"/>
-      </div>
-    </div>
-    <label class="label">E-posta</label>
-    <input class="input" id="email" type="email" placeholder="ornek@mail.com"/>
-    <label class="label">Şifre</label>
-    <input class="input" id="password" type="password" placeholder="En az 6 karakter"/>
-    <button class="btn" onclick="goStep2()">Devam →</button>
-  </div>
+const sb = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
-  <!-- ADIM 2: İşletme bilgisi -->
-  <div class="step" id="step2">
-    <label class="label">İşletme / Organizasyon adı</label>
-    <input class="input" id="orgname" type="text" placeholder="Örn: Kafe Boğaz"/>
-    <label class="label">Sektör</label>
-    <select class="input" id="sector" style="cursor:pointer;">
-      <option value="">Seçin...</option>
-      <option>Yeme & İçme</option>
-      <option>Perakende & Mağaza</option>
-      <option>Güzellik & Bakım</option>
-      <option>Sağlık & Klinik</option>
-      <option>Eğitim</option>
-      <option>Konaklama & Turizm</option>
-      <option>Hizmet Sektörü</option>
-      <option>Diğer</option>
-    </select>
-    <label class="label">İlk şube / lokasyon adı</label>
-    <input class="input" id="wsname" type="text" placeholder="Örn: Beşiktaş Şubesi"/>
-    <div style="display:flex;gap:8px;">
-      <button class="btn" style="background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;" onclick="goStep(1)">← Geri</button>
-      <button class="btn" onclick="goStep3()">Devam →</button>
-    </div>
-  </div>
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
 
-  <!-- ADIM 3: Onay -->
-  <div class="step" id="step3">
-    <div style="background:#F9FAFB;border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:2;">
-      <div><span style="color:#9CA3AF;">Ad Soyad:</span> <strong id="preview-name"></strong></div>
-      <div><span style="color:#9CA3AF;">E-posta:</span> <strong id="preview-email"></strong></div>
-      <div><span style="color:#9CA3AF;">İşletme:</span> <strong id="preview-org"></strong></div>
-      <div><span style="color:#9CA3AF;">İlk Şube:</span> <strong id="preview-ws"></strong></div>
-    </div>
-    <button class="btn" onclick="doRegister()">Hesabı Oluştur</button>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="btn" style="background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;" onclick="goStep(2)">← Geri</button>
-    </div>
-  </div>
+  const { email, password, fullname, orgname, sector, wsname } = req.body;
 
-  <div class="msg" id="msg"></div>
-  <div class="bottom">Zaten hesabınız var mı? <a href="/login.html">Giriş Yapın</a></div>
-</div>
-
-<script>
-const SURL = 'https://aqonfhxwzpxtyqecfddi.supabase.co';
-const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
-const sb = supabase.createClient(SURL, SKEY);
-
-function goStep(n){
-  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===n-1));
-  document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('done',i<n));
-}
-
-function goStep2(){
-  const fname=document.getElementById('fname').value.trim();
-  const lname=document.getElementById('lname').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const msg=document.getElementById('msg');
-  if(!fname||!lname){msg.className='msg err';msg.textContent='Ad ve soyad gerekli.';return;}
-  if(!email){msg.className='msg err';msg.textContent='E-posta gerekli.';return;}
-  if(password.length<6){msg.className='msg err';msg.textContent='Şifre en az 6 karakter olmalı.';return;}
-  msg.textContent='';
-  goStep(2);
-}
-
-function goStep3(){
-  const orgname=document.getElementById('orgname').value.trim();
-  const wsname=document.getElementById('wsname').value.trim();
-  const msg=document.getElementById('msg');
-  if(!orgname){msg.className='msg err';msg.textContent='İşletme adı gerekli.';return;}
-  if(!wsname){msg.className='msg err';msg.textContent='Şube adı gerekli.';return;}
-  msg.textContent='';
-  document.getElementById('preview-name').textContent=document.getElementById('fname').value+' '+document.getElementById('lname').value;
-  document.getElementById('preview-email').textContent=document.getElementById('email').value;
-  document.getElementById('preview-org').textContent=orgname;
-  document.getElementById('preview-ws').textContent=wsname;
-  goStep(3);
-}
-
-async function doRegister(){
-  const msg=document.getElementById('msg');
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const fullname=document.getElementById('fname').value.trim()+' '+document.getElementById('lname').value.trim();
-  const orgname=document.getElementById('orgname').value.trim();
-  const sector=document.getElementById('sector').value;
-  const wsname=document.getElementById('wsname').value.trim();
-
-  msg.className='msg';msg.textContent='Hesap oluşturuluyor...';
-
-  // 1. Auth kaydı
-  const {data,error}=await sb.auth.signUp({
-    email,password,
-    options:{data:{full_name:fullname}}
+  // 1. Kullanıcı oluştur
+  const { data: authData, error: authErr } = await sb.auth.admin.createUser({
+    email,
+    password,
+    user_metadata: { full_name: fullname },
+    email_confirm: true
   });
-  if(error){msg.className='msg err';msg.textContent=error.message;return;}
+  if (authErr) return res.status(400).json({ error: authErr.message });
 
-  const uid=data.user.id;
+  const uid = authData.user.id;
 
   // 2. Organization oluştur
-  const {data:org,error:orgErr}=await sb.from('organizations')
-    .insert({name:orgname,owner_id:uid,plan:'starter'})
+  const { data: org, error: orgErr } = await sb.from('organizations')
+    .insert({ name: orgname, owner_id: uid, plan: 'starter' })
     .select().single();
-  if(orgErr){msg.className='msg err';msg.textContent='Organizasyon oluşturulamadı.';return;}
+  if (orgErr) return res.status(400).json({ error: 'Organizasyon oluşturulamadı: ' + orgErr.message });
 
-  // 3. İlk workspace oluştur
-  const {data:ws,error:wsErr}=await sb.from('workspaces')
-    .insert({org_id:org.id,name:wsname,sector})
+  // 3. Workspace oluştur
+  const { data: ws, error: wsErr } = await sb.from('workspaces')
+    .insert({ org_id: org.id, name: wsname, sector })
     .select().single();
-  if(wsErr){msg.className='msg err';msg.textContent='Şube oluşturulamadı.';return;}
+  if (wsErr) return res.status(400).json({ error: 'Şube oluşturulamadı: ' + wsErr.message });
 
-  // 4. Owner'ı admin olarak members'a ekle
-  await sb.from('members').insert({
-    user_id:uid,
-    workspace_id:ws.id,
-    role:'admin',
-    status:'active',
-    force_password_change:false,
-    activated_at:new Date().toISOString()
+  // 4. Owner'ı admin olarak ekle
+  const { error: memErr } = await sb.from('members').insert({
+    user_id: uid,
+    workspace_id: ws.id,
+    role: 'admin',
+    status: 'active',
+    force_password_change: false,
+    activated_at: new Date().toISOString()
   });
+  if (memErr) return res.status(400).json({ error: 'Üye eklenemedi: ' + memErr.message });
 
-  msg.className='msg ok';
-  msg.textContent='Hesabınız oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...';
-  setTimeout(()=>window.location.href='/login.html',2000);
+  return res.status(200).json({ success: true });
 }
-
-sb.auth.getSession().then(({data:{session}})=>{
-  if(session) window.location.href='/index.html';
-});
-</script>
-</body>
-</html>
