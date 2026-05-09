@@ -17,6 +17,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn{width:100%;padding:11px;background:#5B5FEF;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
 .btn:hover{background:#4A4ED8;}
+.btn-outline{width:100%;padding:11px;background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
 .msg{font-size:12px;text-align:center;margin-top:12px;min-height:18px;}
 .err{color:#B91C1C;}.ok{color:#2D7A3A;}
 .bottom{text-align:center;margin-top:20px;font-size:13px;color:#6B7280;}
@@ -26,6 +27,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
 .step-indicator{display:flex;gap:6px;margin-bottom:24px;}
 .step-dot{flex:1;height:3px;border-radius:2px;background:#E5E7EB;}
 .step-dot.done{background:#5B5FEF;}
+.preview{background:#F9FAFB;border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:2.2;}
+.preview span{color:#9CA3AF;}
 </style>
 </head>
 <body>
@@ -38,7 +41,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
     <div class="step-dot" id="dot3"></div>
   </div>
 
-  <!-- ADIM 1: Kişisel bilgiler -->
   <div class="step active" id="step1">
     <div class="row2">
       <div>
@@ -54,10 +56,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
     <input class="input" id="email" type="email" placeholder="ornek@mail.com"/>
     <label class="label">Şifre</label>
     <input class="input" id="password" type="password" placeholder="En az 6 karakter"/>
-    <button class="btn" onclick="goStep2()">Devam →</button>
+    <button class="btn" onclick="step2()">Devam →</button>
   </div>
 
-  <!-- ADIM 2: İşletme bilgisi -->
   <div class="step" id="step2">
     <label class="label">İşletme / Organizasyon adı</label>
     <input class="input" id="orgname" type="text" placeholder="Örn: Kafe Boğaz"/>
@@ -75,24 +76,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;min-height:100v
     </select>
     <label class="label">İlk şube / lokasyon adı</label>
     <input class="input" id="wsname" type="text" placeholder="Örn: Beşiktaş Şubesi"/>
-    <div style="display:flex;gap:8px;">
-      <button class="btn" style="background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;" onclick="goStep(1)">← Geri</button>
-      <button class="btn" onclick="goStep3()">Devam →</button>
-    </div>
+    <button class="btn" onclick="step3()">Devam →</button>
+    <button class="btn-outline" onclick="goStep(1)" style="margin-top:8px;">← Geri</button>
   </div>
 
-  <!-- ADIM 3: Onay -->
   <div class="step" id="step3">
-    <div style="background:#F9FAFB;border-radius:10px;padding:16px;margin-bottom:20px;font-size:13px;line-height:2;">
-      <div><span style="color:#9CA3AF;">Ad Soyad:</span> <strong id="preview-name"></strong></div>
-      <div><span style="color:#9CA3AF;">E-posta:</span> <strong id="preview-email"></strong></div>
-      <div><span style="color:#9CA3AF;">İşletme:</span> <strong id="preview-org"></strong></div>
-      <div><span style="color:#9CA3AF;">İlk Şube:</span> <strong id="preview-ws"></strong></div>
+    <div class="preview">
+      <div><span>Ad Soyad:</span> <strong id="p-name"></strong></div>
+      <div><span>E-posta:</span> <strong id="p-email"></strong></div>
+      <div><span>İşletme:</span> <strong id="p-org"></strong></div>
+      <div><span>İlk Şube:</span> <strong id="p-ws"></strong></div>
     </div>
     <button class="btn" onclick="doRegister()">Hesabı Oluştur</button>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="btn" style="background:#fff;color:#5B5FEF;border:1.5px solid #5B5FEF;" onclick="goStep(2)">← Geri</button>
-    </div>
+    <button class="btn-outline" onclick="goStep(2)" style="margin-top:8px;">← Geri</button>
   </div>
 
   <div class="msg" id="msg"></div>
@@ -104,39 +100,38 @@ const SURL = 'https://aqonfhxwzpxtyqecfddi.supabase.co';
 const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb25maHh3enB4dHlxZWNmZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTYxODEsImV4cCI6MjA5Mzg5MjE4MX0.ZsELQEi3pHKjZb2A_TbbyE4Kzi-AaDxS41hg4o3UxtA';
 const sb = supabase.createClient(SURL, SKEY);
 
-function goStep(n){
-  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===n-1));
-  document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('done',i<n));
+function goStep(n) {
+  document.querySelectorAll('.step').forEach((s,i) => s.classList.toggle('active', i === n-1));
+  document.querySelectorAll('.step-dot').forEach((d,i) => d.classList.toggle('done', i < n));
+  document.getElementById('msg').textContent = '';
 }
 
-function goStep2(){
-  const fname=document.getElementById('fname').value.trim();
-  const lname=document.getElementById('lname').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const msg=document.getElementById('msg');
-  if(!fname||!lname){msg.className='msg err';msg.textContent='Ad ve soyad gerekli.';return;}
-  if(!email){msg.className='msg err';msg.textContent='E-posta gerekli.';return;}
-  if(password.length<6){msg.className='msg err';msg.textContent='Şifre en az 6 karakter olmalı.';return;}
-  msg.textContent='';
+function step2() {
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  if(!fname || !lname) { msg.className='msg err'; msg.textContent='Ad ve soyad gerekli.'; return; }
+  if(!email) { msg.className='msg err'; msg.textContent='E-posta gerekli.'; return; }
+  if(password.length < 6) { msg.className='msg err'; msg.textContent='Şifre en az 6 karakter olmalı.'; return; }
   goStep(2);
 }
 
-function goStep3(){
-  const orgname=document.getElementById('orgname').value.trim();
-  const wsname=document.getElementById('wsname').value.trim();
-  const msg=document.getElementById('msg');
-  if(!orgname){msg.className='msg err';msg.textContent='İşletme adı gerekli.';return;}
-  if(!wsname){msg.className='msg err';msg.textContent='Şube adı gerekli.';return;}
-  msg.textContent='';
-  document.getElementById('preview-name').textContent=document.getElementById('fname').value+' '+document.getElementById('lname').value;
-  document.getElementById('preview-email').textContent=document.getElementById('email').value;
-  document.getElementById('preview-org').textContent=orgname;
-  document.getElementById('preview-ws').textContent=wsname;
+function step3() {
+  const orgname = document.getElementById('orgname').value.trim();
+  const wsname = document.getElementById('wsname').value.trim();
+  const msg = document.getElementById('msg');
+  if(!orgname) { msg.className='msg err'; msg.textContent='İşletme adı gerekli.'; return; }
+  if(!wsname) { msg.className='msg err'; msg.textContent='Şube adı gerekli.'; return; }
+  document.getElementById('p-name').textContent = document.getElementById('fname').value+' '+document.getElementById('lname').value;
+  document.getElementById('p-email').textContent = document.getElementById('email').value;
+  document.getElementById('p-org').textContent = orgname;
+  document.getElementById('p-ws').textContent = wsname;
   goStep(3);
 }
 
-async function doRegister(){
+async function doRegister() {
   const msg = document.getElementById('msg');
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
@@ -153,30 +148,31 @@ async function doRegister(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, fullname, orgname, sector, wsname })
     });
-
     const data = await res.json();
-
-    if (!res.ok || data.error) {
+    if(!res.ok || data.error) {
       msg.className='msg err';
       msg.textContent = data.error || 'Bir hata oluştu.';
       return;
     }
-
-    // Kayıt başarılı, giriş yap
     const { error: loginErr } = await sb.auth.signInWithPassword({ email, password });
-    if (loginErr) {
+    if(loginErr) {
       msg.className='msg ok';
-      msg.textContent='Hesabınız oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...';
+      msg.textContent='Hesabınız oluşturuldu! Giriş yapın.';
       setTimeout(()=>window.location.href='/login.html', 2000);
       return;
     }
-
     msg.className='msg ok';
-    msg.textContent='Hesabınız oluşturuldu! Panele yönlendiriliyorsunuz...';
+    msg.textContent='Hesabınız oluşturuldu! Yönlendiriliyorsunuz...';
     setTimeout(()=>window.location.href='/index.html', 1500);
-
   } catch(e) {
     msg.className='msg err';
-    msg.textContent='Bağlantı hatası: ' + e.message;
+    msg.textContent='Bağlantı hatası: '+e.message;
   }
 }
+
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session) window.location.href='/index.html';
+});
+</script>
+</body>
+</html>
